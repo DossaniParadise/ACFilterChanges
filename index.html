@@ -116,8 +116,8 @@
     /* Clean natural-scrolling responsive grid container */
     .columns-container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 0.5rem;
       width: 100%;
     }
 
@@ -143,8 +143,8 @@
       main {
         max-width: 1200px;
         width: 100%;
-        margin: 1.5rem auto !important;
-        padding: 0 1.5rem;
+        margin: 0.5rem auto !important;
+        padding: 0 0.5rem;
       }
     }
 
@@ -154,8 +154,8 @@
         overflow-y: auto;
       }
       main {
-        margin: 1rem auto;
-        padding: 0 1rem;
+        margin: 0.25rem auto;
+        padding: 0 0.25rem;
       }
     }
 
@@ -331,6 +331,100 @@
       padding: 2px;
     }
 
+    /* Extremely Compact Toolbar Styles */
+    .compact-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      background-color: #ffffff;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 0.35rem;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .compact-search-wrapper {
+      position: relative;
+      flex: 1 1 200px;
+    }
+    
+    .compact-search-input {
+      width: 100%;
+      height: 30px;
+      padding: 0.25rem 2rem 0.25rem 1.75rem;
+      font-size: 0.775rem;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      background-color: #ffffff;
+      color: var(--text-dark);
+      outline: none;
+      transition: var(--transition-fast);
+    }
+    
+    .compact-search-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+    }
+    
+    .compact-search-icon {
+      position: absolute;
+      left: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      font-size: 0.775rem;
+    }
+    
+    .compact-search-clear {
+      position: absolute;
+      right: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      cursor: pointer;
+      display: none;
+      line-height: 1;
+    }
+    
+    .compact-select {
+      height: 30px;
+      padding: 0 1.25rem 0 0.4rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      background-color: #f8fafc;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+      min-width: 125px;
+      max-width: 175px;
+      flex-shrink: 0;
+      transition: var(--transition-fast);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.35rem center;
+      background-size: 0.6rem;
+    }
+
+    .compact-select:hover {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .compact-select:focus {
+      border-color: #2563eb;
+      background-color: #ffffff;
+    }
+
+    /* Keep the chip class around for general purpose or legacy elements if needed */
     .filter-chips {
       display: flex;
       gap: 0.375rem;
@@ -364,7 +458,7 @@
     /* Styled Grid Container Fallback for general cards */
     .restaurants-grid-fallback {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
       gap: 0.5rem;
     }
 
@@ -372,13 +466,13 @@
     .store-card {
       background-color: var(--state-none-bg);
       border: 1px solid var(--state-none-border);
-      border-radius: 8px;
-      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      padding: 0.3rem 0.5rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 0.625rem;
+      gap: 0.5rem;
       transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.1s ease;
       box-shadow: var(--shadow-sm);
       min-height: unset;
@@ -758,42 +852,23 @@
   <!-- ==================================================================== -->
   <!-- HEADER BAR & REALTIME STATS BANNER                                   -->
   <!-- ==================================================================== -->
-  <header>
-    <div class="header-container">
-      <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-        <div>
-          <h1 class="brand-title">
-            <span>🔧</span> AC Filter Changes
-          </h1>
-          <div class="brand-subtitle">Store Maintenance Operations</div>
-        </div>
-        <button class="btn btn-primary" onclick="toggleViewSegment('bulk-import')" id="btnGoToBulk" style="padding: 0 0.75rem; font-size: 0.775rem; font-weight: 700; border-radius: 6px; height: 32px; gap: 0.35rem; display: flex; align-items: center; margin-left: 0.5rem; background-color: #2563eb; color: #ffffff; border-color: #2563eb;">
-          📥 Bulk Import Filters
+  <header style="padding: 0.5rem 0.75rem;">
+    <div class="header-container" style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: nowrap;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; min-width: 0;">
+        <h1 class="brand-title" style="font-size: 1.05rem; gap: 0.25rem; white-space: nowrap; font-weight: 700;">
+          🔧 AC Filters
+        </h1>
+        <button class="btn btn-primary" onclick="toggleViewSegment('bulk-import')" id="btnGoToBulk" style="padding: 0 0.5rem; font-size: 0.725rem; font-weight: 700; border-radius: 4px; height: 26px; gap: 0.25rem; display: flex; align-items: center; margin-left: 0.5rem; background-color: #2563eb; color: #ffffff; border-color: #2563eb; white-space: nowrap;">
+          📥 Bulk Import
         </button>
-        <button class="btn" onclick="toggleViewSegment('board')" id="btnGoToBoard" style="padding: 0 0.75rem; font-size: 0.775rem; font-weight: 700; border-radius: 6px; height: 32px; gap: 0.35rem; display: none; align-items: center; margin-left: 0.5rem;">
-          📋 Back to Dashboard
+        <button class="btn" onclick="toggleViewSegment('board')" id="btnGoToBoard" style="padding: 0 0.5rem; font-size: 0.725rem; font-weight: 700; border-radius: 4px; height: 26px; gap: 0.25rem; display: none; align-items: center; margin-left: 0.5rem; white-space: nowrap;">
+          📋 Dashboard
         </button>
-      </div>
-
-      <!-- Compact operational stats dashboard -->
-      <div class="metrics-bar">
-        <div class="metric-card" style="border-left: 3px solid var(--state-overdue-border);" onclick="setFilter('overdue')">
-          <span class="metric-label">Overdue</span>
-          <span class="metric-value" id="statsOverdueCount">0</span>
-        </div>
-        <div class="metric-card" style="border-left: 3px solid var(--state-none-border);" onclick="setFilter('none')">
-          <span class="metric-label">Pending</span>
-          <span class="metric-value" id="statsPendingCount">0</span>
-        </div>
-        <div class="metric-card" style="border-left: 3px solid var(--state-good-border);" onclick="setFilter('good')">
-          <span class="metric-label">Up to Date</span>
-          <span class="metric-value" id="statsGoodCount">0</span>
-        </div>
       </div>
       
       <!-- Connection Status Badge -->
-      <div id="statusBadge" class="connection-badge">
-        <div class="dot"></div>
+      <div id="statusBadge" class="connection-badge" style="padding: 0.15rem 0.5rem; font-size: 0.675rem; border-radius: 9999px;">
+        <div class="dot" style="width: 6px; height: 6px;"></div>
         <span id="statusLabel">Offline</span>
       </div>
     </div>
@@ -803,58 +878,44 @@
     <!-- BOARD VIEW (STANDARD Dashboard columns and filters) -->
     <div id="boardViewContainer">
       <!-- ==================================================================== -->
-      <!-- SEARCH & FILTER CHIP PANEL                                           -->
+      <!-- COMPACT TOOLBAR FILTER SELECT PANEL                                  -->
       <!-- ==================================================================== -->
-      <div class="filter-actions-panel" style="display: flex; flex-direction: column; gap: 1rem; align-items: stretch; margin-bottom: 1.5rem; background-color: #ffffff; border: 1px solid var(--color-border); border-radius: 12px; padding: 1.25rem; box-shadow: var(--shadow-sm);">
+      <div class="compact-toolbar">
         <!-- Search Input -->
-        <div class="search-wrapper" style="max-width: 100%; flex: 1;">
-          <span class="search-icon">🔍</span>
+        <div class="compact-search-wrapper">
+          <span class="compact-search-icon">🔍</span>
           <input 
             type="text" 
             id="searchInput" 
-            class="search-input" 
-            placeholder="Search by Store Number or Store Name..." 
+            class="compact-search-input" 
+            placeholder="Search Store..." 
             oninput="handleSearch(this.value)"
           />
-          <button id="searchClearBtn" class="search-clear-btn" onclick="clearSearch()">✕</button>
+          <button id="searchClearBtn" class="compact-search-clear" onclick="clearSearch()">✕</button>
         </div>
 
-        <!-- Actionable Filtering groups -->
-        <div style="display: flex; flex-direction: column; gap: 0.75rem; width: 100%; border-top: 1px dashed var(--color-border); padding-top: 0.85rem;">
-          
-          <!-- Filter Row 1: Filter Status -->
-          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-            <span style="font-size: 0.725rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; width: 90px; flex-shrink: 0;">🔧 Status:</span>
-            <div class="filter-chips">
-              <button class="chip active" id="chip-all" onclick="setFilter('all')">All Stores (<span id="count-all">0</span>)</button>
-              <button class="chip" id="chip-overdue" onclick="setFilter('overdue')" style="color: var(--state-overdue-text);">Overdue (<span id="count-overdue">0</span>)</button>
-              <button class="chip" id="chip-none" onclick="setFilter('none')" style="color: var(--state-none-text);">Pending (<span id="count-none">0</span>)</button>
-              <button class="chip" id="chip-good" onclick="setFilter('good')" style="color: var(--state-good-text);">Up to Date (<span id="count-good">0</span>)</button>
-            </div>
-          </div>
+        <!-- Status Filter Select -->
+        <select id="select-status" class="compact-select" onchange="setFilter(this.value)">
+          <option id="select-status-all" value="all">All Statuses (0)</option>
+          <option id="select-status-overdue" value="overdue">⚠️ Overdue (0)</option>
+          <option id="select-status-none" value="none">➖ Pending (0)</option>
+          <option id="select-status-good" value="good">✅ Up to Date (0)</option>
+        </select>
 
-          <!-- Filter Row 2: Category -->
-          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-            <span style="font-size: 0.725rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; width: 90px; flex-shrink: 0;">🏪 Category:</span>
-            <div class="filter-chips">
-              <button class="chip active" id="chip-dept-all" onclick="setDepartmentFilter('all')">All Categories</button>
-              <button class="chip" id="chip-dept-fastfood" onclick="setDepartmentFilter('fastfood')">🍔 Fast Food</button>
-              <button class="chip" id="chip-dept-cstore" onclick="setDepartmentFilter('cstore')">🏪 C-Store</button>
-              <button class="chip" id="chip-dept-carwash" onclick="setDepartmentFilter('carwash')">🧼 Car Wash</button>
-            </div>
-          </div>
+        <!-- Category/Department Filter Select -->
+        <select id="select-category" class="compact-select" onchange="setDepartmentFilter(this.value)">
+          <option value="all">All Categories</option>
+          <option id="select-category-fastfood" value="fastfood">🍔 Fast Food</option>
+          <option id="select-category-cstore" value="cstore">🏪 C-Store</option>
+          <option id="select-category-carwash" value="carwash">🧼 Car Wash</option>
+        </select>
 
-          <!-- Filter Row 3: Texas Regions -->
-          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-            <span style="font-size: 0.725rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; width: 90px; flex-shrink: 0;">📍 Location:</span>
-            <div class="filter-chips">
-              <button class="chip active" id="chip-reg-all" onclick="setRegionFilter('all')">All Regions</button>
-              <button class="chip" id="chip-reg-east" onclick="setRegionFilter('east')">🏁 East TX</button>
-              <button class="chip" id="chip-reg-west" onclick="setRegionFilter('west')">🌵 West TX</button>
-            </div>
-          </div>
-
-        </div>
+        <!-- Region/Location Filter Select -->
+        <select id="select-region" class="compact-select" onchange="setRegionFilter(this.value)">
+          <option value="all">All Regions</option>
+          <option id="select-region-east" value="east">🏁 East TX</option>
+          <option id="select-region-west" value="west">🌵 West TX</option>
+        </select>
       </div>
 
       <!-- ==================================================================== -->
@@ -1169,23 +1230,40 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
     // ==========================================
     // 5. RENDERING PIPELINE & HELPER UTILITIES
     // ==========================================
-    // Helper to abbreviate Burger King to BK for display
+    // Helper to abbreviate and compact store names for display
     function formatStoreNameDisplay(name) {
       if (!name) return "";
-      return name.replace(/Burger King/gi, "BK");
+      let str = name;
+      
+      // Convert "Paradise Quick Stop" or "Paradise Quickstop" to "PQS"
+      str = str.replace(/Paradise\s+Quick\s+Stop/gi, "PQS");
+      str = str.replace(/Paradise\s+Quickstop/gi, "PQS");
+
+      // Replace "Burger King" (case-insensitive) with "BK"
+      str = str.replace(/Burger\s+King/gi, "BK");
+
+      // Replace "BK" followed by optional spaces, numbers, and hashes
+      str = str.replace(/\bBK\s*#?\d+\b/gi, "BK");
+      str = str.replace(/\bBK\d+\b/gi, "BK");
+
+      // Eliminate duplicate "BK BK" instances
+      str = str.replace(/\bBK\s+BK\b/gi, "BK");
+
+      // Tidy up duplicate spaces and trim edges
+      str = str.replace(/\s+/g, " ").trim();
+      return str;
     }
 
     // Classifies the store department by literal strings
     function getStoreColumn(name) {
       if (!name) return "cstore";
       const val = name.toLowerCase();
-      if (val.includes("burger king") || val.includes("subway")) {
+      if (val.includes("burger king") || val.includes("subway") || val.includes("bk") || val.startsWith("bk")) {
         return "fastfood";
       }
-      if (val.includes("wash")) {
+      if (val.includes("wash") || val.includes("carwash")) {
         return "carwash";
       }
-      // "If it has 'Stop' put it under the C-Store column" 
       // Safe fallback covers general c-store points
       return "cstore";
     }
@@ -1327,15 +1405,31 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
         });
       }
 
-      // Apply TX Region Filters (East TX vs West TX based on longitude < -96)
+      // Apply TX Region Filters (East TX vs West TX)
       if (activeRegion !== "all") {
         displayedStores = displayedStores.filter(store => {
+          // 1. Direct operational territory DB field check if present
+          if (store.territory) {
+            const t = String(store.territory).toLowerCase().trim();
+            if (t.includes("east") || t === "e" || t === "etx") {
+              return activeRegion === "east";
+            }
+            if (t.includes("west") || t === "w" || t === "wtx") {
+              return activeRegion === "west";
+            }
+          }
+          
+          // 2. Corrected longitude split:
+          // In the Western Hemisphere, longitude is negative.
+          // West TX is far west (more negative, e.g., Midland/Odessa at -102 is less than -96)
+          // East TX is far east (less negative, e.g., Houston/Tyler at -94 is greater than or equal to -96)
           const lng = parseFloat(store.longitude || store.lng || store.lon || store.long || 0);
-          if (isNaN(lng)) return false;
+          if (isNaN(lng) || lng === 0) return false;
+          
           if (activeRegion === "east") {
-            return lng < -96;
-          } else if (activeRegion === "west") {
             return lng >= -96;
+          } else if (activeRegion === "west") {
+            return lng < -96;
           }
           return true;
         });
@@ -1385,16 +1479,18 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
       const pendingCount = allStores.filter(s => s.status === "state-none").length;
       const goodCount = allStores.filter(s => s.status === "state-good").length;
 
-      // Stats visual boxes
-      document.getElementById("statsOverdueCount").innerText = overdueCount;
-      document.getElementById("statsPendingCount").innerText = pendingCount;
-      document.getElementById("statsGoodCount").innerText = goodCount;
+      // Update dropdown option text content safely
+      const optAll = document.getElementById("select-status-all");
+      if (optAll) optAll.innerText = `All Statuses (${totalCount})`;
 
-      // Filter chips counts
-      document.getElementById("count-all").innerText = totalCount;
-      document.getElementById("count-overdue").innerText = overdueCount;
-      document.getElementById("count-none").innerText = pendingCount;
-      document.getElementById("count-good").innerText = goodCount;
+      const optOverdue = document.getElementById("select-status-overdue");
+      if (optOverdue) optOverdue.innerText = `⚠️ Overdue (${overdueCount})`;
+
+      const optPending = document.getElementById("select-status-none");
+      if (optPending) optPending.innerText = `➖ Pending (${pendingCount})`;
+
+      const optGood = document.getElementById("select-status-good");
+      if (optGood) optGood.innerText = `✅ Up to Date (${goodCount})`;
     }
 
     // ==========================================
@@ -2178,25 +2274,20 @@ Burger King #27028 Gainesville\t1\t20x20x2\t4
       const input = document.getElementById("searchInput");
       if (input) input.value = "";
       searchQuery = "";
-      document.getElementById("searchClearBtn").style.display = "none";
+      const clearBtn = document.getElementById("searchClearBtn");
+      if (clearBtn) {
+        clearBtn.style.display = "none";
+      }
       combineAndRender();
     }
 
     function setFilter(filterType) {
       activeFilter = filterType;
       
-      // Update chip CSS classes
-      const chips = ["all", "overdue", "none", "good"];
-      chips.forEach(c => {
-        const el = document.getElementById(`chip-${c}`);
-        if (el) {
-          if (c === filterType) {
-            el.classList.add("active");
-          } else {
-            el.classList.remove("active");
-          }
-        }
-      });
+      const selectEl = document.getElementById("select-status");
+      if (selectEl && selectEl.value !== filterType) {
+        selectEl.value = filterType;
+      }
 
       combineAndRender();
     }
@@ -2204,18 +2295,10 @@ Burger King #27028 Gainesville\t1\t20x20x2\t4
     function setDepartmentFilter(deptType) {
       activeDepartment = deptType;
       
-      // Update chip CSS classes
-      const depts = ["all", "fastfood", "cstore", "carwash"];
-      depts.forEach(d => {
-        const el = document.getElementById(`chip-dept-${d}`);
-        if (el) {
-          if (d === deptType) {
-            el.classList.add("active");
-          } else {
-            el.classList.remove("active");
-          }
-        }
-      });
+      const selectEl = document.getElementById("select-category");
+      if (selectEl && selectEl.value !== deptType) {
+        selectEl.value = deptType;
+      }
 
       combineAndRender();
     }
@@ -2223,18 +2306,10 @@ Burger King #27028 Gainesville\t1\t20x20x2\t4
     function setRegionFilter(regionType) {
       activeRegion = regionType;
       
-      // Update chip CSS classes
-      const regions = ["all", "east", "west"];
-      regions.forEach(r => {
-        const el = document.getElementById(`chip-reg-${r}`);
-        if (el) {
-          if (r === regionType) {
-            el.classList.add("active");
-          } else {
-            el.classList.remove("active");
-          }
-        }
-      });
+      const selectEl = document.getElementById("select-region");
+      if (selectEl && selectEl.value !== regionType) {
+        selectEl.value = regionType;
+      }
 
       combineAndRender();
     }
