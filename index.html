@@ -2104,7 +2104,27 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
       }
     }
 
-    // Hydrates the read-only filter sizes display in the modal
+    // Toggle block helper for expanded equipment profiles description
+    function toggleUnitDetails(event) {
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      const detailedList = document.getElementById("modalFilterSizesDetailedList");
+      const txtSpan = document.getElementById("txtToggleDetails");
+      if (!detailedList || !txtSpan) return;
+
+      const isHidden = detailedList.style.display === "none";
+      if (isHidden) {
+        detailedList.style.display = "flex";
+        txtSpan.innerText = "❌ Hide Unit Details";
+      } else {
+        detailedList.style.display = "none";
+        txtSpan.innerText = "🔍 Show Unit Details";
+      }
+    }
+
+    // Hydrates the read-only filter sizes display in the modal with automatic consolidation
     function loadFilterSizeData(trackingRecord) {
       const container = document.getElementById("modalFilterSizesReadOnly");
       if (!container) return;
@@ -2157,16 +2177,74 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
         return;
       }
 
+      // 1. Automatic Consolidation for Technicians
+      const summaryMap = {};
+      rows.forEach(r => {
+        const normVal = (r.size || "").trim().toUpperCase();
+        if (!normVal) return;
+        const qtyVal = parseInt(r.qty, 10) || 1;
+        summaryMap[normVal] = (summaryMap[normVal] || 0) + qtyVal;
+      });
+
+      const consolidatedCount = Object.keys(summaryMap).length;
+      if (consolidatedCount === 0) {
+        container.innerHTML = `<span style="font-size: 0.725rem; color: var(--text-muted); font-style: italic; padding: 0.15rem 0.35rem;">📏 Custom Filter Sizes Missing</span>`;
+        return;
+      }
+
+      // Required Filters Header Iconography
+      const sectionHeader = document.createElement("div");
+      sectionHeader.style.cssText = "font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.025em; display: flex; align-items: center; gap: 0.35rem; margin-bottom: 0.15rem; width: 100%;";
+      sectionHeader.innerHTML = `<span>📦 Required Filters</span>`;
+      container.appendChild(sectionHeader);
+
+      // Render the consolidated list
+      const consolidatedContainer = document.createElement("div");
+      consolidatedContainer.style.cssText = "display: flex; flex-direction: column; gap: 0.25rem; width: 100%;";
+
+      Object.entries(summaryMap).sort((a,b) => b[1] - a[1]).forEach(([size, totalQty]) => {
+        const itemDiv = document.createElement("div");
+        itemDiv.style.cssText = "display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; background: #ffffff; border: 1px solid var(--color-border); border-radius: 6px; padding: 0.35rem 0.5rem; width: 100%; box-shadow: 0 1px 2px rgba(0,0,0,0.02);";
+
+        const textPart = document.createElement("span");
+        textPart.style.cssText = "font-size: 0.75rem; font-weight: 850; color: var(--text-dark); display: flex; align-items: center; gap: 0.15rem;";
+        textPart.innerHTML = `<span style="color: #2563eb; background: #eff6ff; padding: 0.1rem 0.35rem; border-radius: 4px; border: 1px solid #bfdbfe; font-family: var(--font-mono); font-size: 0.725rem; font-weight: 850; display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; line-height: 1;">${totalQty}</span> ×`;
+
+        const sizePart = document.createElement("div");
+        sizePart.style.cssText = "display: flex; align-items: center; gap: 0.1rem;";
+        sizePart.innerHTML = getFormattedDimensionsColoredHTML(size);
+
+        itemDiv.appendChild(textPart);
+        itemDiv.appendChild(sizePart);
+        consolidatedContainer.appendChild(itemDiv);
+      });
+
+      container.appendChild(consolidatedContainer);
+
+      // Optional Equipment Level Detail Expansion
+      const detailsToggle = document.createElement("div");
+      detailsToggle.style.cssText = "margin-top: 0.35rem; display: flex; align-items: center; justify-content: center; width: 100%;";
+      detailsToggle.innerHTML = `
+        <button type="button" class="btn" style="height: 24px; padding: 0 0.5rem; font-size: 0.675rem; color: #475569; border-color: #cbd5e1; background: #f8fafc; font-weight: 650; display: flex; align-items: center; gap: 3px; cursor: pointer; border-radius: 4px;" onclick="toggleUnitDetails(event)">
+          <span id="txtToggleDetails">🔍 Show Unit Details</span>
+        </button>
+      `;
+      container.appendChild(detailsToggle);
+
+      const detailedList = document.createElement("div");
+      detailedList.id = "modalFilterSizesDetailedList";
+      detailedList.style.cssText = "display: none; flex-direction: column; gap: 0.25rem; margin-top: 0.35rem; border-top: 1px dashed var(--color-border); padding-top: 0.35rem; width: 100%;";
+
       rows.forEach(r => {
         const normVal = (r.size || "").trim().toUpperCase();
         if (!normVal) return;
         
         const badgeItem = document.createElement("div");
-        badgeItem.style.cssText = "display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; background: #ffffff; border: 1px solid var(--color-border); border-radius: 6px; padding: 0.3rem 0.5rem; width: 100%; box-shadow: 0 1px 2px rgba(0,0,0,0.02);";
+        badgeItem.style.cssText = "display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; background: #f8fafc; border: 1px solid var(--color-border); border-radius: 6px; padding: 0.25rem 0.45rem; width: 100%; font-size: 0.7rem;";
 
         const textPart = document.createElement("span");
-        textPart.style.cssText = "font-size: 0.725rem; font-weight: 700; color: var(--text-dark);";
-        textPart.innerHTML = `Unit ${escapeHtml(r.unit || '?')}: <span style="color: var(--text-muted); font-size: 0.65rem; font-weight: 600; font-family: var(--font-mono); background: #f1f5f9; padding: 0.05rem 0.25rem; border-radius: 4px; border: 1px solid #e2e8f0; margin-left: 0.15rem;">QTY: ${escapeHtml(r.qty || '1')}</span>`;
+        textPart.style.cssText = "font-size: 0.7rem; font-weight: 600; color: var(--text-dark);";
+        textPart.innerHTML = `Unit ${escapeHtml(r.unit || '?')}: <span style="color: var(--text-muted); font-size: 0.625rem; font-weight: 600; font-family: var(--font-mono); background: #ffffff; padding: 0.02rem 0.2rem; border-radius: 3px; border: 1px solid #e2e8f0; margin-left: 0.15rem;">QTY: ${escapeHtml(r.qty || '1')}</span>`;
 
         const sizePart = document.createElement("div");
         sizePart.style.cssText = "display: flex; align-items: center; gap: 0.1rem;";
@@ -2174,8 +2252,10 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
 
         badgeItem.appendChild(textPart);
         badgeItem.appendChild(sizePart);
-        container.appendChild(badgeItem);
+        detailedList.appendChild(badgeItem);
       });
+
+      container.appendChild(detailedList);
     }
 
     // Imports parsed bulk copy-paste lines from Excel into interactive memory
