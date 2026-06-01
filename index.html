@@ -916,6 +916,17 @@
           <option id="select-region-east" value="east">🏁 East TX</option>
           <option id="select-region-west" value="west">🌵 West TX</option>
         </select>
+
+        <!-- Filter Sizes Custom Dropdown -->
+        <div class="custom-dropdown-container" id="sizeDropdownContainer" style="position: relative; display: inline-block;">
+          <button type="button" class="compact-select" id="sizeDropdownTrigger" onclick="toggleSizeDropdown(event)" style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; text-align: left; cursor: pointer; min-width: 155px; background: #ffffff; border: 1px solid var(--color-border); border-radius: 8px; height: 32px; font-size: 0.725rem; font-weight: 600; padding: 0 0.65rem;">
+            <span id="sizeDropdownSelectedText" style="display: flex; align-items: center; gap: 0.1rem;">📏 All Sizes</span>
+            <span style="font-size: 0.6rem; color: var(--text-muted); pointer-events: none;">▼</span>
+          </button>
+          <div class="custom-dropdown-menu" id="sizeDropdownMenu" style="display: none; position: absolute; top: calc(100% + 4px); right: 0; background: #ffffff; border: 1px solid var(--color-border); border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); z-index: 100; min-width: 180px; max-height: 250px; overflow-y: auto; padding: 0.35rem 0;">
+            <!-- Hydrated dynamically -->
+          </div>
+        </div>
       </div>
 
       <!-- ==================================================================== -->
@@ -1010,85 +1021,65 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
   <!-- STORE DETAILS & HISTORIC CHANGE FORM DIALOG                           -->
   <!-- ==================================================================== -->
   <div class="modal-backdrop" id="detailsModal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 id="modalStoreTitle">Store Details</h3>
-        <button class="modal-close-btn" onclick="closeModal()">&times;</button>
+    <div class="modal-card" style="max-height: 96vh; display: flex; flex-direction: column;">
+      <div class="modal-header" style="padding: 0.65rem 1rem; border-bottom: 1px solid var(--color-border); background-color: #f8fafc; flex-shrink: 0;">
+        <h3 id="modalStoreTitle" style="font-size: 0.95rem; font-weight: 750; color: var(--text-dark); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 85%;">Store Details</h3>
+        <button class="modal-close-btn" onclick="closeModal()" style="font-size: 1.35rem; padding: 0.15rem; line-height: 1;">&times;</button>
       </div>
       
-      <div class="modal-body">
-        <!-- Live Restaurant Address & Contact Detail plates -->
-        <div class="store-details-plate">
-          <div class="plate-row">
-            <span class="plate-label">Store ID:</span>
-            <span class="plate-value" id="modalStoreNumber">---</span>
+      <div class="modal-body" style="padding: 0.75rem 1rem; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.65rem;">
+        <!-- Compact Restaurant Address & Contact Detail plates -->
+        <div class="store-details-plate" style="background-color: #f8fafc; border-radius: 6px; padding: 0.45rem 0.6rem; margin-bottom: 0; border: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 0.15rem;">
+          <div style="font-size: 0.775rem; color: var(--text-dark); font-weight: 700; display: flex; justify-content: space-between; align-items: center;">
+            <span>Unit ID: <span id="modalStoreNumber" style="font-family: var(--font-mono); font-weight: 700; color: #1e3a8a;">---</span></span>
+            <span id="modalStorePhone" style="font-weight: 500; font-size: 0.725rem; color: var(--text-muted);">---</span>
           </div>
-          <div class="plate-row">
-            <span class="plate-label">Address:</span>
-            <span class="plate-value" id="modalStoreAddress">---</span>
-          </div>
-          <div class="plate-row">
-            <span class="plate-label">Phone:</span>
-            <span class="plate-value" id="modalStorePhone">---</span>
-          </div>
+          <a href="#" id="modalStoreAddress" target="_blank" style="font-size: 0.725rem; color: #2563eb; text-decoration: underline; font-weight: 600; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; display: block;" title="Launch navigation application">---</a>
         </div>
 
-        <!-- Filter change record form -->
-        <div class="form-group">
-          <label class="form-label">When was filter changed?</label>
-          <div class="datepicker-wrapper">
-            <input type="date" id="modalDatePicker" class="date-input">
-            <button class="btn btn-today" onclick="setDatePickerToToday()">Today</button>
+        <!-- Date of Filter Change (side-by-side) -->
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label" style="font-size: 0.75rem; font-weight: 700; margin-bottom: 0.2rem; color: var(--text-dark);">When was filter changed?</label>
+          <div style="display: flex; gap: 0.35rem; align-items: center;">
+            <input type="date" id="modalDatePicker" class="date-input" style="height: 32px; font-size: 0.775rem; padding: 0.25rem 0.5rem; border-radius: 6px; border: 1px solid var(--color-border); flex: 1;">
+            <button class="btn btn-today" onclick="setDatePickerToToday()" style="height: 32px; font-size: 0.725rem; padding: 0 0.65rem; border-radius: 6px; flex-shrink: 0;">⚡ Today</button>
           </div>
         </div>
 
         <!-- Coils Cleaned Question -->
-        <div class="form-group" style="margin-top: 1rem;">
-          <label class="form-label">Were the coils cleaned?</label>
-          <div style="display: flex; gap: 0.5rem;">
-            <button type="button" id="btnCoilsYes" class="btn" style="flex: 1;" onclick="setCoilsCleaned('yes')">Yes</button>
-            <button type="button" id="btnCoilsNo" class="btn" style="flex: 1;" onclick="setCoilsCleaned('no')">No</button>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label" style="font-size: 0.75rem; font-weight: 700; margin-bottom: 0.2rem; color: var(--text-dark);">Were the coils cleaned?</label>
+          <div style="display: flex; gap: 0.35rem;">
+            <button type="button" id="btnCoilsYes" class="btn" style="flex: 1; height: 32px; font-size: 0.725rem; padding: 0; font-weight: 700; border-radius: 6px;" onclick="setCoilsCleaned('yes')">Yes</button>
+            <button type="button" id="btnCoilsNo" class="btn" style="flex: 1; height: 32px; font-size: 0.725rem; padding: 0; font-weight: 700; border-radius: 6px;" onclick="setCoilsCleaned('no')">No</button>
           </div>
           <input type="hidden" id="modalCoilsCleaned" value="">
         </div>
 
-        <!-- Configured Filter Sizes (Interactive list editor) -->
-        <div class="form-group" style="margin-top: 1rem;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-            <label class="form-label" style="margin-bottom: 0;">Interactive Filter Sizes</label>
-            <button type="button" class="btn" style="padding: 0.2rem 0.5rem; font-size: 0.725rem; background-color: #eff6ff; color: #1e40af; border-color: #bfdbfe; height: 26px; display: flex; align-items: center; gap: 4px;" onclick="addModalFilterRow()">
-              ➕ Add Row
-            </button>
-          </div>
-          <div style="border: 1px solid var(--color-border); border-radius: 8px; padding: 0.75rem; background-color: #f8fafc;">
-            <!-- Row Headings -->
-            <div style="display: grid; grid-template-columns: 1.5fr 3.5fr 1.5fr 35px; gap: 0.4rem; margin-bottom: 0.4rem; font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.025em; padding-left: 0.15rem;">
-              <div>Unit #</div>
-              <div>Filter Size</div>
-              <div>Qty</div>
-              <div></div>
-            </div>
-            <!-- Rows Container -->
-            <div id="modalFilterRowsContainer" style="display: flex; flex-direction: column; gap: 0.4rem; max-height: 180px; overflow-y: auto; padding-right: 2px;">
-              <!-- Hydrated dynamically with interactive unit inputs -->
-            </div>
+        <!-- Required Filter Sizes (Read-Only) -->
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label" style="font-size: 0.75rem; font-weight: 700; margin-bottom: 0.2rem; color: var(--text-dark);">Required Filter Sizes (Read-Only)</label>
+          <div id="modalFilterSizesReadOnly" style="display: flex; flex-wrap: wrap; gap: 0.25rem; background: #fafafa; border: 1px solid var(--color-border); border-radius: 6px; padding: 0.45rem; min-height: 34px; align-items: center;">
+            <!-- Hydrated dynamically as compact color-coded size badges -->
           </div>
         </div>
 
-        <!-- Comments Field -->
-        <div class="form-group" style="margin-top: 1rem;">
-          <div class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
-            <span>Additional Comments</span>
-            <span id="charCount" style="font-size: 0.725rem; font-weight: normal; color: var(--text-muted);">0 / 250</span>
+        <!-- Comments Field (Compact) -->
+        <div class="form-group" style="margin-bottom: 0;">
+          <div class="form-label" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.15rem; color: var(--text-dark);">
+            <span>Additional Comments (Optional)</span>
+            <span id="charCount" style="font-size: 0.65rem; font-weight: normal; color: var(--text-muted);">0 / 250</span>
           </div>
-          <textarea id="modalComments" class="date-input" style="width: 100%; height: 75px; resize: none; font-family: var(--font-sans); line-height: 1.4; padding: 0.5rem;" maxlength="250" oninput="updateCommentCharLimit(this.value)" placeholder="Enter any extra details or technician notes..."></textarea>
+          <textarea id="modalComments" class="date-input" style="width: 100%; height: 42px; resize: none; font-family: var(--font-sans); font-size: 0.725rem; line-height: 1.3; padding: 0.35rem; border-radius: 6px; border: 1px solid var(--color-border);" maxlength="250" oninput="updateCommentCharLimit(this.value)" placeholder="Enter any extra details or technician notes..."></textarea>
         </div>
       </div>
       
-      <div class="modal-footer">
-        <button class="btn btn-clear" style="margin-right: auto;" onclick="clearFilterChangeDate()">Clear Date</button>
-        <button class="btn" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="saveFilterChangeDate()">Save</button>
+      <div class="modal-footer" style="padding: 0.5rem 0.75rem; gap: 0.35rem; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--color-border); background-color: #f8fafc; flex-shrink: 0;">
+        <button class="btn btn-clear" style="height: 36px; font-size: 0.725rem; padding: 0 0.5rem; border-radius: 6px;" onclick="clearFilterChangeDate()">Clear Date</button>
+        <div style="display: flex; gap: 0.35rem;">
+          <button class="btn" style="height: 36px; font-size: 0.725rem; padding: 0 0.65rem; border-radius: 6px;" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-primary" style="height: 36px; font-size: 0.725rem; padding: 0 1.15rem; border-radius: 6px; font-weight: 700; background-color: #2563eb;" onclick="saveFilterChangeDate()">Save</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1134,6 +1125,7 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
     let activeFilter = "all"; // 'all', 'overdue', 'none', 'good'
     let activeDepartment = "all"; // 'all', 'fastfood', 'cstore', 'carwash'
     let activeRegion = "all"; // 'all', 'east', 'west'
+    let activeSize = "all"; // 'all' or specific sizes e.g. 20x25x2
     let selectedStoreId = null;
 
     // Helper to sanitize key paths for Firebase Compatibility 
@@ -1254,6 +1246,80 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
       return str;
     }
 
+    // Returns a deterministic high-contrast pleasant color palette for consistent size badges
+    function getFilterSizeColor(sizeStr) {
+      if (!sizeStr) return { bg: "#f1f5f9", text: "#475569", border: "#cbd5e1", dot: "#64748b" };
+      const str = sizeStr.trim().toUpperCase();
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const colors = [
+        { bg: "#fee2e2", text: "#991b1b", border: "#fca5a5", dot: "#ef4444" }, // Red
+        { bg: "#dbeafe", text: "#1e40af", border: "#93c5fd", dot: "#3b82f6" }, // Blue
+        { bg: "#dcfce7", text: "#166534", border: "#86efac", dot: "#22c55e" }, // Green
+        { bg: "#fef9c3", text: "#854d0e", border: "#fde047", dot: "#eab308" }, // Yellow
+        { bg: "#f3e8ff", text: "#6b21a8", border: "#d8b4fe", dot: "#a855f7" }, // Purple
+        { bg: "#ffe4e6", text: "#9f1239", border: "#fecdd3", dot: "#f43f5e" }, // Rose
+        { bg: "#ffedd5", text: "#9a3412", border: "#fed7aa", dot: "#f97316" }, // Orange
+        { bg: "#e0f2fe", text: "#0369a1", border: "#7dd3fc", dot: "#0ea5e9" }  // Sky
+      ];
+      const idx = Math.abs(hash) % colors.length;
+      return colors[idx];
+    }
+
+    // Returns a deterministic high-contrast pleasant color palette for an individual dimension/segment
+    function getDimensionColor(dimStr) {
+      if (!dimStr) return { bg: "#f1f5f9", text: "#475569", border: "#cbd5e1" };
+      const val = dimStr.trim().toUpperCase();
+      
+      // Stable color mapping rules for key dimensions with high-contrast accessibility
+      const fixedMap = {
+        "20": { bg: "#dbeafe", text: "#1e40af", border: "#93c5fd" }, // Blue
+        "16": { bg: "#ffedd5", text: "#9a3412", border: "#fed7aa" }, // Orange
+        "25": { bg: "#f3e8ff", text: "#6b21a8", border: "#d8b4fe" }, // Purple
+        "30": { bg: "#fee2e2", text: "#991b1b", border: "#fca5a5" }, // Red
+        "2":  { bg: "#dcfce7", text: "#166534", border: "#86efac" }, // Green
+        "4":  { bg: "#fef9c3", text: "#854d0e", border: "#fde047" }  // Yellow
+      };
+      
+      if (fixedMap[val]) return fixedMap[val];
+      
+      // Hash-fallback for any custom or missing dimensions
+      let hash = 0;
+      for (let i = 0; i < val.length; i++) {
+        hash = val.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const seqColors = [
+        { bg: "#dbeafe", text: "#1e40af", border: "#93c5fd" }, // Blue
+        { bg: "#ffedd5", text: "#9a3412", border: "#fed7aa" }, // Orange
+        { bg: "#f3e8ff", text: "#6b21a8", border: "#d8b4fe" }, // Purple
+        { bg: "#fee2e2", text: "#991b1b", border: "#fca5a5" }, // Red
+        { bg: "#dcfce7", text: "#166534", border: "#86efac" }, // Green
+        { bg: "#fef9c3", text: "#854d0e", border: "#fde047" }, // Yellow
+        { bg: "#ffe4e6", text: "#9f1239", border: "#fecdd3" }, // Rose
+        { bg: "#e0f2fe", text: "#0369a1", border: "#7dd3fc" }  // Sky
+      ];
+      const idx = Math.abs(hash) % seqColors.length;
+      return seqColors[idx];
+    }
+
+    // Formats any dimension segment into interactive styled colored badges e.g. [20]×[25]×[2]
+    function getFormattedDimensionsColoredHTML(sizeStr) {
+      if (!sizeStr) return "";
+      const trimmed = sizeStr.trim();
+      const parts = trimmed.split(/([xX×])/);
+      return parts.map(part => {
+        const val = part.trim();
+        if (!val) return "";
+        if (part === "x" || part === "X" || part === "×") {
+          return `<span style="color: #64748b; font-weight: 700; font-size: 0.65rem; margin: 0 0.08rem; display: inline-flex; align-items: center; justify-content: center; height: 18px;">×</span>`;
+        }
+        const c = getDimensionColor(val);
+        return `<span style="display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.65rem; font-weight: 850; background-color: ${c.bg}; color: ${c.text}; border: 1px solid ${c.border}; border-radius: 4px; padding: 0 0.22rem; height: 18px; line-height: 1; text-align: center; box-shadow: 0 1px 1px rgba(0,0,0,0.02); min-width: 14px;">${escapeHtml(val)}</span>`;
+      }).join("");
+    }
+
     // Classifies the store department by literal strings
     function getStoreColumn(name) {
       if (!name) return "cstore";
@@ -1321,16 +1387,9 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
             <span class="card-store-badge">${escapeHtml(store.storeNumber || '#')}</span>
           </div>
 
-          <!-- Center Panel: High-density info with short details -->
-          <div style="display: flex; flex-direction: column; min-width: 0; flex: 1; margin: 0 0.15rem;">
+          <!-- Center Panel: High-density info focusing entirely on the identifier -->
+          <div style="display: flex; flex-direction: column; min-width: 0; flex: 1; margin: 0 0.15rem; justify-content: center;">
             <span class="card-store-title" title="${escapeHtml(store.storeName)}">${escapeHtml(formatStoreNameDisplay(store.storeName))}</span>
-            <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; align-items: center; margin-top: 0.15rem;">
-              ${!store.filterSize ? `
-                <span class="card-filter-size-label text-placeholder">
-                  📏 Sizes Missing
-                </span>
-              ` : ''}
-            </div>
           </div>
 
           <!-- Right Panel: Relative time metrics -->
@@ -1364,12 +1423,45 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
         const timestamp = trackingRecord.lastFilterChangeTimestamp || null;
         const daysElapsed = calculateDaysSinceChange(timestamp);
         
+        let sizesList = [];
+        if (trackingRecord.filterSizesList) {
+          try {
+            if (typeof trackingRecord.filterSizesList === "string") {
+              sizesList = JSON.parse(trackingRecord.filterSizesList);
+            } else if (Array.isArray(trackingRecord.filterSizesList)) {
+              sizesList = trackingRecord.filterSizesList;
+            }
+          } catch(e) {
+            console.error(e);
+          }
+        }
+        if (sizesList.length === 0 && trackingRecord.filterSize) {
+          const parts = trackingRecord.filterSize.split(/,\s*/);
+          parts.forEach((part, index) => {
+            const qtyMatch = part.trim().match(/^\((\d+)\)\s*(.*)$/);
+            if (qtyMatch) {
+              sizesList.push({
+                unit: (index + 1).toString(),
+                size: qtyMatch[2].trim().toUpperCase(),
+                qty: qtyMatch[1].trim()
+              });
+            } else {
+              sizesList.push({
+                unit: (index + 1).toString(),
+                size: part.trim().toUpperCase(),
+                qty: "1"
+              });
+            }
+          });
+        }
+
         return {
           ...store,
           lastFilterChangeTimestamp: timestamp,
           daysElapsed: daysElapsed,
           status: getStoreStatusClass(daysElapsed),
-          filterSize: trackingRecord.filterSize || ""
+          filterSize: trackingRecord.filterSize || "",
+          sizesList: sizesList
         };
       });
 
@@ -1435,6 +1527,15 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
         });
       }
 
+      // Apply Specific Filter Size Filter
+      if (activeSize !== "all") {
+        displayedStores = displayedStores.filter(store => {
+          return store.sizesList && store.sizesList.some(item =>
+            item.size && item.size.trim().toUpperCase() === activeSize.trim().toUpperCase()
+          );
+        });
+      }
+
       // Sort Order Strategy: Most overdue stores first
       displayedStores.sort((a, b) => {
         const aPriority = a.status === "state-overdue" ? 1 : (a.status === "state-none" ? 2 : 3);
@@ -1491,7 +1592,103 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
 
       const optGood = document.getElementById("select-status-good");
       if (optGood) optGood.innerText = `✅ Up to Date (${goodCount})`;
+
+      // Extract unique sizes dynamically across the entire database directory
+      const uniqueSizesSet = new Set();
+      allStores.forEach(s => {
+        (s.sizesList || []).forEach(item => {
+          if (item.size) {
+            const norm = item.size.trim().toUpperCase();
+            if (norm) uniqueSizesSet.add(norm);
+          }
+        });
+      });
+      const sortedSizes = Array.from(uniqueSizesSet).sort();
+
+      const menu = document.getElementById("sizeDropdownMenu");
+      if (menu) {
+        menu.innerHTML = "";
+
+        // 1. "All Sizes" option
+        const optAll = document.createElement("div");
+        optAll.style.cssText = "padding: 0.4rem 0.65rem; font-size: 0.725rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; border-bottom: 1px solid #f1f5f9; color: var(--text-dark); transition: background 0.1s;";
+        optAll.innerHTML = `<span>📏 All Sizes</span> <span style="font-size: 0.65rem; color: var(--text-muted); font-family: var(--font-mono);">(${allStores.length})</span>`;
+        optAll.onclick = (e) => {
+          e.stopPropagation();
+          selectCustomSize("all");
+        };
+        optAll.onmouseenter = () => { optAll.style.backgroundColor = "#f8fafc"; };
+        optAll.onmouseleave = () => { optAll.style.backgroundColor = ""; };
+        menu.appendChild(optAll);
+
+        // 2. Hydrate each specific size with colored dimensions
+        sortedSizes.forEach(size => {
+          const matchingCount = allStores.filter(s => 
+            s.sizesList && s.sizesList.some(item => item.size && item.size.trim().toUpperCase() === size)
+          ).length;
+
+          const opt = document.createElement("div");
+          opt.style.cssText = "padding: 0.35rem 0.65rem; font-size: 0.725rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; transition: background 0.1s; border-bottom: 1px solid #f8fafc;";
+          
+          const badgesHtml = getFormattedDimensionsColoredHTML(size);
+          opt.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.1rem; flex: 1; pointer-events: none;">
+              ${badgesHtml}
+            </div>
+            <span style="font-size: 0.65rem; font-weight: 600; color: var(--text-muted); font-family: var(--font-mono); flex-shrink: 0; pointer-events: none;">(${matchingCount})</span>
+          `;
+          
+          opt.onclick = (e) => {
+            e.stopPropagation();
+            selectCustomSize(size);
+          };
+          opt.onmouseenter = () => { opt.style.backgroundColor = "#f8fafc"; };
+          opt.onmouseleave = () => { opt.style.backgroundColor = ""; };
+          menu.appendChild(opt);
+        });
+
+        // Retain last selected filter option if it still exists
+        if (activeSize !== "all" && !sortedSizes.includes(activeSize)) {
+          activeSize = "all";
+        }
+        updateSizeTriggerText();
+      }
     }
+
+    // Handles selecting a dimension size from the custom dropdown menu
+    function selectCustomSize(size) {
+      activeSize = size;
+      updateSizeTriggerText();
+      const menu = document.getElementById("sizeDropdownMenu");
+      if (menu) menu.style.display = "none";
+      combineAndRender();
+    }
+
+    // Updates the size trigger display text (or colors) to match selection
+    function updateSizeTriggerText() {
+      const triggerSpan = document.getElementById("sizeDropdownSelectedText");
+      if (!triggerSpan) return;
+      if (activeSize === "all") {
+        triggerSpan.innerHTML = "📏 All Sizes";
+      } else {
+        triggerSpan.innerHTML = `<div style="display: flex; align-items: center; gap: 0.05rem;">${getFormattedDimensionsColoredHTML(activeSize)}</div>`;
+      }
+    }
+
+    // Toggles size dropdown menu visibility state
+    function toggleSizeDropdown(event) {
+      event.stopPropagation();
+      const menu = document.getElementById("sizeDropdownMenu");
+      if (!menu) return;
+      const isOpen = menu.style.display === "block";
+      menu.style.display = isOpen ? "none" : "block";
+    }
+
+    // Register click away listener dynamically
+    document.addEventListener("click", () => {
+      const menu = document.getElementById("sizeDropdownMenu");
+      if (menu) menu.style.display = "none";
+    });
 
     // ==========================================
     // 6. MODAL INTERACTIVE DIALOG LAYER
@@ -1508,7 +1705,19 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
       // Title & static metadata
       document.getElementById("modalStoreTitle").innerText = formatStoreNameDisplay(storeObj.storeName);
       document.getElementById("modalStoreNumber").innerText = storeObj.storeNumber || "N/A";
-      document.getElementById("modalStoreAddress").innerText = storeObj.address || "No address populated";
+      const addrEl = document.getElementById("modalStoreAddress");
+      if (addrEl) {
+        const addressText = storeObj.address || "No address populated";
+        addrEl.innerText = addressText;
+        if (storeObj.address) {
+          addrEl.href = "https://maps.google.com/?q=" + encodeURIComponent(addressText);
+          addrEl.style.display = "block";
+        } else {
+          addrEl.removeAttribute("href");
+          addrEl.style.color = "var(--text-muted)";
+          addrEl.style.textDecoration = "none";
+        }
+      }
       document.getElementById("modalStorePhone").innerText = storeObj.phone || "No phone listed";
 
       // Set date picker value to already entered date, or empty
@@ -1635,9 +1844,9 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
       }
     }
 
-    // Hydrates the interactive filter sizes editing grid in the modal
+    // Hydrates the read-only filter sizes display in the modal
     function loadFilterSizeData(trackingRecord) {
-      const container = document.getElementById("modalFilterRowsContainer");
+      const container = document.getElementById("modalFilterSizesReadOnly");
       if (!container) return;
       container.innerHTML = "";
 
@@ -1683,49 +1892,30 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
         });
       }
 
-      // If empty, prime with at least one empty row so it doesn't look blank
       if (rows.length === 0) {
-        rows.push({ unit: "1", size: "", qty: "" });
+        container.innerHTML = `<span style="font-size: 0.725rem; color: var(--text-muted); font-style: italic; padding: 0.15rem 0.35rem;">📏 Custom Filter Sizes Missing</span>`;
+        return;
       }
 
       rows.forEach(r => {
-        appendInteractiveRow(r.unit, r.size, r.qty);
+        const normVal = (r.size || "").trim().toUpperCase();
+        if (!normVal) return;
+        
+        const badgeItem = document.createElement("div");
+        badgeItem.style.cssText = "display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; background: #ffffff; border: 1px solid var(--color-border); border-radius: 6px; padding: 0.3rem 0.5rem; width: 100%; box-shadow: 0 1px 2px rgba(0,0,0,0.02);";
+
+        const textPart = document.createElement("span");
+        textPart.style.cssText = "font-size: 0.725rem; font-weight: 700; color: var(--text-dark);";
+        textPart.innerHTML = `Unit ${escapeHtml(r.unit || '?')}: <span style="color: var(--text-muted); font-size: 0.65rem; font-weight: 600; font-family: var(--font-mono); background: #f1f5f9; padding: 0.05rem 0.25rem; border-radius: 4px; border: 1px solid #e2e8f0; margin-left: 0.15rem;">QTY: ${escapeHtml(r.qty || '1')}</span>`;
+
+        const sizePart = document.createElement("div");
+        sizePart.style.cssText = "display: flex; align-items: center; gap: 0.1rem;";
+        sizePart.innerHTML = getFormattedDimensionsColoredHTML(normVal);
+
+        badgeItem.appendChild(textPart);
+        badgeItem.appendChild(sizePart);
+        container.appendChild(badgeItem);
       });
-    }
-
-    // Dynamic Row Generation Helper
-    function appendInteractiveRow(unit = "", size = "", qty = "") {
-      const container = document.getElementById("modalFilterRowsContainer");
-      if (!container) return;
-
-      const rowDiv = document.createElement("div");
-      rowDiv.className = "modal-filter-row";
-      rowDiv.style.cssText = "display: grid; grid-template-columns: 1.5fr 3.5fr 1.5fr 35px; gap: 0.4rem; align-items: center;";
-
-      rowDiv.innerHTML = `
-        <input type="text" class="date-input modal-input-unit" style="padding: 0.3rem 0.4rem; font-size: 0.775rem; text-align: center; height: 32px; border-radius: 6px; border: 1px solid var(--color-border); background-color: #ffffff;" value="${escapeHtml(unit)}" placeholder="1">
-        <input type="text" class="date-input modal-input-size" style="padding: 0.3rem 0.4rem; font-size: 0.775rem; height: 32px; border-radius: 6px; border: 1px solid var(--color-border); background-color: #ffffff;" value="${escapeHtml(size)}" placeholder="e.g. 20x20x2">
-        <input type="number" class="date-input modal-input-qty" style="padding: 0.3rem 0.4rem; font-size: 0.775rem; text-align: center; height: 32px; border-radius: 6px; border: 1px solid var(--color-border); background-color: #ffffff;" value="${escapeHtml(qty)}" placeholder="4" min="1">
-        <button type="button" class="btn" style="padding: 0; color: #ef4444; border-color: #fca5a5; background: #fef2f2; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem;" onclick="this.parentElement.remove()" title="Delete row">✕</button>
-      `;
-      container.appendChild(rowDiv);
-    }
-
-    // Interactive Button Actions
-    function addModalFilterRow() {
-      const container = document.getElementById("modalFilterRowsContainer");
-      let nextUnitNum = 1;
-      if (container) {
-        const unitInputs = container.querySelectorAll(".modal-input-unit");
-        if (unitInputs.length > 0) {
-          const maxNum = Array.from(unitInputs)
-            .map(input => parseInt(input.value, 10))
-            .filter(val => !isNaN(val))
-            .reduce((max, val) => Math.max(max, val), 0);
-          nextUnitNum = maxNum + 1;
-        }
-      }
-      appendInteractiveRow(String(nextUnitNum), "", "");
     }
 
     // Imports parsed bulk copy-paste lines from Excel into interactive memory
@@ -2150,7 +2340,7 @@ Burger King #27028 Gainesville\t1\t20x20x2\t4
       }
     }
 
-    // Write date entry and interactive filter sizes straight to Firebase
+    // Write date entry straight to Firebase preservation
     function saveFilterChangeDate() {
       if (!selectedStoreId) return;
       const storeObj = restaurants[selectedStoreId];
@@ -2168,68 +2358,12 @@ Burger King #27028 Gainesville\t1\t20x20x2\t4
       const coilsCleanedValue = document.getElementById("modalCoilsCleaned").value;
       const commentsValue = document.getElementById("modalComments").value.trim();
 
-      // Collect interactive filter size rows
-      const rows = document.querySelectorAll(".modal-filter-row");
-      const filterSizesList = [];
-      const totalsBySize = {};
-      let hasError = false;
-
-      rows.forEach(row => {
-        const unitInput = row.querySelector(".modal-input-unit");
-        const sizeInput = row.querySelector(".modal-input-size");
-        const qtyInput = row.querySelector(".modal-input-qty");
-
-        if (!unitInput || !sizeInput || !qtyInput) return;
-
-        const unitVal = unitInput.value.trim();
-        let sizeVal = sizeInput.value.trim();
-        const qtyVal = qtyInput.value.trim();
-
-        if (sizeVal) {
-          // Standardize size format: replace spaces in dimensions like "20 x 20 x 2" with "20x20x2"
-          // Keep trailing text comments if any (e.g. "(wide filter)")
-          const dimsRegex = /^(\d+\s*[xX]\s*\d+(?:\s*[xX]\s*\d+)?)(.*)$/;
-          const dimsMatch = sizeVal.match(dimsRegex);
-          if (dimsMatch) {
-            const dimensionPart = dimsMatch[1].replace(/\s+/g, "").toLowerCase();
-            const extraPart = dimsMatch[2] ? dimsMatch[2].trim() : "";
-            sizeVal = dimensionPart + (extraPart ? " " + extraPart : "");
-          }
-
-          const parsedQty = parseInt(qtyVal, 10) || 0;
-          if (parsedQty <= 0) {
-            alert(`Please enter a valid quantity greater than 0 for filter size: ${sizeVal}`);
-            hasError = true;
-            return;
-          }
-
-          filterSizesList.push({
-            unit: unitVal || "1",
-            size: sizeVal,
-            qty: String(parsedQty)
-          });
-
-          const normalizedSizeKey = sizeVal.toUpperCase();
-          totalsBySize[normalizedSizeKey] = (totalsBySize[normalizedSizeKey] || 0) + parsedQty;
-        }
-      });
-
-      if (hasError) return;
-
-      // Construct a beautiful summary overview string like: "(4) 20x20x2, (2) 16x16x2"
-      const filterSizeSummary = Object.entries(totalsBySize)
-        .map(([size, qty]) => `(${qty}) ${size}`)
-        .join(", ");
-
-      // Update Firebase cleanly!
+      // Update Firebase cleanly, preserving filter sizes and numbers completely intact!
       db.ref(`filterChanges/${safeKey}`).update({
         storeNumber: storeObj.storeNumber,
         lastFilterChangeTimestamp: timestamp,
         coilsCleaned: coilsCleanedValue,
-        comments: commentsValue,
-        // Save the manual sizes!
-        filterSize: filterSizeSummary,
-        filterSizesList: JSON.stringify(filterSizesList)
+        comments: commentsValue
       }, (err) => {
         if (err) {
           alert("Could not persist record: " + err.message);
@@ -2239,16 +2373,20 @@ Burger King #27028 Gainesville\t1\t20x20x2\t4
       });
     }
 
-    // Erase change record tracking
+    // Erase change record date tracking with strict record integrity
     function clearFilterChangeDate() {
       if (!selectedStoreId) return;
       const storeObj = restaurants[selectedStoreId];
       if (!storeObj) return;
 
-      if (confirm(`Do you want to reset and clear the recorded filter change metadata for ${storeObj.storeName}?`)) {
+      if (confirm(`Do you want to reset and clear the recorded filter change dates for ${storeObj.storeName}?`)) {
         const safeKey = getFirebaseSafePathKey(storeObj.storeNumber);
         
-        db.ref(`filterChanges/${safeKey}`).remove((err) => {
+        // Remove only date fields. Preserve comments, and preserve sizes!
+        db.ref(`filterChanges/${safeKey}`).update({
+          lastFilterChangeTimestamp: null,
+          coilsCleaned: null
+        }, (err) => {
           if (err) {
             alert("Clear command failed: " + err.message);
           } else {
@@ -2312,6 +2450,10 @@ Burger King #27028 Gainesville\t1\t20x20x2\t4
       }
 
       combineAndRender();
+    }
+
+    function setSizeFilter(sizeType) {
+      selectCustomSize(sizeType);
     }
 
     // Escape dynamic inputs safely
