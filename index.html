@@ -900,6 +900,7 @@
           <option id="select-status-overdue" value="overdue">⚠️ Overdue (0)</option>
           <option id="select-status-none" value="none">➖ Pending (0)</option>
           <option id="select-status-good" value="good">✅ Up to Date (0)</option>
+          <option id="select-status-missingsizes" value="missingsizes">⚠️ Missing Sizes (0)</option>
         </select>
 
         <!-- Category/Department Filter Select -->
@@ -1056,11 +1057,43 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
           <input type="hidden" id="modalCoilsCleaned" value="">
         </div>
 
-        <!-- Required Filter Sizes (Read-Only) -->
-        <div class="form-group" style="margin-bottom: 0;">
-          <label class="form-label" style="font-size: 0.75rem; font-weight: 700; margin-bottom: 0.2rem; color: var(--text-dark);">Required Filter Sizes (Read-Only)</label>
-          <div id="modalFilterSizesReadOnly" style="display: flex; flex-wrap: wrap; gap: 0.25rem; background: #fafafa; border: 1px solid var(--color-border); border-radius: 6px; padding: 0.45rem; min-height: 34px; align-items: center;">
-            <!-- Hydrated dynamically as compact color-coded size badges -->
+        <!-- Required Filter Sizes -->
+        <div class="form-group" style="margin-bottom: 0; display: flex; flex-direction: column; gap: 0.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label class="form-label" style="font-size: 0.75rem; font-weight: 700; margin-bottom: 0; color: var(--text-dark);">Required Filter Sizes</label>
+            
+            <!-- Dynamic context-based actions -->
+            <button type="button" id="btnShowAddSizes" class="btn" style="padding: 0.15rem 0.45rem; font-size: 0.675rem; height: 24px; background-color: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; font-weight: 700; display: none; align-items: center; justify-content: center;" onclick="triggerAddSizesMode()">
+              ➕ Add Sizes
+            </button>
+            <button type="button" id="btnClearSizes" class="btn" style="padding: 0.15rem 0.45rem; font-size: 0.675rem; height: 24px; background-color: #fef2f2; color: #b91c1c; border-color: #fecdd3; font-weight: 700; display: none; align-items: center; justify-content: center;" onclick="clearFilterSizes()">
+              🗑️ Clear Sizes
+            </button>
+          </div>
+
+          <!-- Read-only sizes badges layout -->
+          <div id="modalFilterSizesReadOnly" style="display: flex; flex-direction: column; gap: 0.25rem; background: #fafafa; border: 1px solid var(--color-border); border-radius: 6px; padding: 0.45rem; min-height: 34px; justify-content: center;">
+            <!-- Hydrated dynamically -->
+          </div>
+
+          <!-- Dynamic Add Sizes Inline Form -->
+          <div id="addSizesFormContainer" style="display: none; background: #f8fafc; border: 1px solid var(--color-border); border-radius: 6px; padding: 0.5rem; flex-direction: column; gap: 0.4rem;">
+            <div style="display: grid; grid-template-columns: 1.2fr 1.5fr 1.5fr 1.5fr 1.2fr 30px; gap: 0.3rem; margin-bottom: 0.1rem; font-size: 0.65rem; font-weight: bold; color: var(--text-muted); text-align: center;">
+              <div>Unit #</div>
+              <div>Length</div>
+              <div>Width</div>
+              <div>Thick</div>
+              <div>Qty</div>
+              <div></div>
+            </div>
+            <div id="addSizesRows" style="display: flex; flex-direction: column; gap: 0.3rem;">
+              <!-- Entry rows populated here -->
+            </div>
+            <div style="display: flex; gap: 0.35rem; margin-top: 0.25rem;">
+              <button type="button" class="btn" style="height: 26px; padding: 0 0.5rem; font-size: 0.675rem; display: flex; align-items: center; justify-content: center;" onclick="addEntrySizeRow()">➕ Add Row</button>
+              <button type="button" class="btn btn-primary" style="height: 26px; padding: 0 0.75rem; font-size: 0.675rem; background-color: #1e40af; border-color: #1e40af; color: white; font-weight: 700; margin-left: auto; display: flex; align-items: center; justify-content: center;" onclick="saveEnteredSizes()">💾 Save Sizes</button>
+              <button type="button" class="btn" style="height: 26px; padding: 0 0.5rem; font-size: 0.675rem; display: flex; align-items: center; justify-content: center;" onclick="cancelAddSizesMode()">Cancel</button>
+            </div>
           </div>
         </div>
 
@@ -1075,8 +1108,8 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
       </div>
       
       <div class="modal-footer" style="padding: 0.5rem 0.75rem; gap: 0.35rem; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--color-border); background-color: #f8fafc; flex-shrink: 0;">
-        <button class="btn btn-clear" style="height: 36px; font-size: 0.725rem; padding: 0 0.5rem; border-radius: 6px;" onclick="clearFilterChangeDate()">Clear Date</button>
-        <div style="display: flex; gap: 0.35rem;">
+        <button id="modalBtnClearDate" class="btn btn-clear" style="height: 36px; font-size: 0.725rem; padding: 0 0.5rem; border-radius: 6px; display: none;" onclick="clearFilterChangeDate()">Clear Last Change Date</button>
+        <div style="display: flex; gap: 0.35rem; margin-left: auto;">
           <button class="btn" style="height: 36px; font-size: 0.725rem; padding: 0 0.65rem; border-radius: 6px;" onclick="closeModal()">Cancel</button>
           <button class="btn btn-primary" style="height: 36px; font-size: 0.725rem; padding: 0 1.15rem; border-radius: 6px; font-weight: 700; background-color: #2563eb;" onclick="saveFilterChangeDate()">Save</button>
         </div>
@@ -1390,6 +1423,11 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
           <!-- Center Panel: High-density info focusing entirely on the identifier -->
           <div style="display: flex; flex-direction: column; min-width: 0; flex: 1; margin: 0 0.15rem; justify-content: center;">
             <span class="card-store-title" title="${escapeHtml(store.storeName)}">${escapeHtml(formatStoreNameDisplay(store.storeName))}</span>
+            ${(!store.sizesList || store.sizesList.length === 0) ? `
+              <div style="font-size: 0.65rem; color: #b91c1c; background-color: #fef2f2; border: 1px solid #fee2e2; border-radius: 4px; padding: 0.05rem 0.25rem; display: inline-flex; align-items: center; gap: 2px; font-weight: 700; width: fit-content; margin-top: 0.1rem;" title="Please configure filter size reference data">
+                ⚠️ Missing Sizes
+              </div>
+            ` : ''}
           </div>
 
           <!-- Right Panel: Relative time metrics -->
@@ -1486,6 +1524,7 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
           if (activeFilter === "overdue") return store.status === "state-overdue";
           if (activeFilter === "none") return store.status === "state-none";
           if (activeFilter === "good") return store.status === "state-good";
+          if (activeFilter === "missingsizes") return !store.sizesList || store.sizesList.length === 0;
           return true;
         });
       }
@@ -1579,6 +1618,7 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
       const overdueCount = allStores.filter(s => s.status === "state-overdue").length;
       const pendingCount = allStores.filter(s => s.status === "state-none").length;
       const goodCount = allStores.filter(s => s.status === "state-good").length;
+      const missingCount = allStores.filter(s => !s.sizesList || s.sizesList.length === 0).length;
 
       // Update dropdown option text content safely
       const optAll = document.getElementById("select-status-all");
@@ -1592,6 +1632,9 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
 
       const optGood = document.getElementById("select-status-good");
       if (optGood) optGood.innerText = `✅ Up to Date (${goodCount})`;
+
+      const optMissing = document.getElementById("select-status-missingsizes");
+      if (optMissing) optMissing.innerText = `⚠️ Missing Sizes (${missingCount})`;
 
       // Extract unique sizes dynamically across the entire database directory
       const uniqueSizesSet = new Set();
@@ -1728,12 +1771,24 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
         picker.value = "";
       }
 
+      // Show/hide Clear Last Change Date based on existence
+      const btnClearDate = document.getElementById("modalBtnClearDate");
+      if (btnClearDate) {
+        if (lastChangeTimestamp) {
+          btnClearDate.style.display = "inline-flex";
+          btnClearDate.innerText = "Clear Last Change Date";
+        } else {
+          btnClearDate.style.display = "none";
+        }
+      }
+
       // Set the coils question state
       const coilsVal = trackingRecord.coilsCleaned || "";
       setCoilsCleaned(coilsVal);
 
       // Populate structured units filter grid
       loadFilterSizeData(trackingRecord);
+      updateModalSizesControls(trackingRecord);
 
       // Set comments input state
       const commentsTextarea = document.getElementById("modalComments");
@@ -1748,6 +1803,211 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
     function closeModal() {
       document.getElementById("detailsModal").classList.remove("active");
       selectedStoreId = null;
+    }
+
+    // Interactive helper managing Dynamic Sizes setup trigger states
+    function triggerAddSizesMode() {
+      const form = document.getElementById("addSizesFormContainer");
+      const readOnlyContainer = document.getElementById("modalFilterSizesReadOnly");
+      if (form && readOnlyContainer) {
+        form.style.display = "flex";
+        readOnlyContainer.style.display = "none";
+        
+        // Hide trigger btn
+        const btnAdd = document.getElementById("btnShowAddSizes");
+        if (btnAdd) btnAdd.style.display = "none";
+
+        // Prime with one default empty row
+        const rowsContainer = document.getElementById("addSizesRows");
+        if (rowsContainer) {
+          rowsContainer.innerHTML = "";
+          addEntrySizeRow("1", "", "", "", "4");
+        }
+      }
+    }
+
+    function cancelAddSizesMode() {
+      const form = document.getElementById("addSizesFormContainer");
+      const readOnlyContainer = document.getElementById("modalFilterSizesReadOnly");
+      if (form && readOnlyContainer) {
+        form.style.display = "none";
+        readOnlyContainer.style.display = "flex";
+
+        // Restore trigger btn
+        const btnAdd = document.getElementById("btnShowAddSizes");
+        if (btnAdd) btnAdd.style.display = "inline-flex";
+      }
+    }
+
+    function clearFilterSizes() {
+      if (!selectedStoreId) return;
+      const storeObj = restaurants[selectedStoreId];
+      if (!storeObj) return;
+
+      if (confirm(`Remove all filter sizes for this store (${storeObj.storeName})?`)) {
+        const safeKey = getFirebaseSafePathKey(storeObj.storeNumber);
+        db.ref(`filterChanges/${safeKey}`).update({
+          filterSize: null,
+          filterSizesList: null
+        }, (err) => {
+          if (err) {
+            alert("Could not clear sizes: " + err.message);
+          } else {
+            alert("Filter sizes cleared successfully.");
+            
+            // Re-hydrate local states
+            const trackingRecord = filterChanges[safeKey] || {};
+            trackingRecord.filterSize = null;
+            trackingRecord.filterSizesList = null;
+            
+            loadFilterSizeData(trackingRecord);
+            updateModalSizesControls(trackingRecord);
+          }
+        });
+      }
+    }
+
+    function updateModalSizesControls(trackingRecord) {
+      const btnAdd = document.getElementById("btnShowAddSizes");
+      const btnClear = document.getElementById("btnClearSizes");
+      const form = document.getElementById("addSizesFormContainer");
+      const readOnlyContainer = document.getElementById("modalFilterSizesReadOnly");
+
+      if (!btnAdd || !btnClear || !form || !readOnlyContainer) return;
+
+      // Reset form container visibility
+      form.style.display = "none";
+      readOnlyContainer.style.display = "flex";
+
+      let hasSizes = false;
+      if (trackingRecord.filterSizesList) {
+        try {
+          const list = (typeof trackingRecord.filterSizesList === "string") 
+            ? JSON.parse(trackingRecord.filterSizesList)
+            : trackingRecord.filterSizesList;
+          if (Array.isArray(list) && list.length > 0) {
+            hasSizes = true;
+          }
+        } catch(e) {}
+      }
+      if (!hasSizes && trackingRecord.filterSize) {
+        hasSizes = true;
+      }
+
+      if (hasSizes) {
+        btnAdd.style.display = "none";
+        btnClear.style.display = "inline-flex";
+      } else {
+        btnAdd.style.display = "inline-flex";
+        btnClear.style.display = "none";
+      }
+    }
+
+    // Apppend size entry row dynamically in modal size setup form
+    function addEntrySizeRow(unit = "", length = "", width = "", thickness = "", qty = "") {
+      const container = document.getElementById("addSizesRows");
+      if (!container) return;
+
+      const row = document.createElement("div");
+      row.className = "add-size-row-item";
+      row.style.cssText = "display: grid; grid-template-columns: 1.2fr 1.5fr 1.5fr 1.5fr 1.2fr 30px; gap: 0.3rem; align-items: center; margin-bottom: 0.25rem;";
+      
+      // Calculate next unit number
+      let nextUnit = unit;
+      if (!nextUnit) {
+        const existing = container.querySelectorAll(".input-add-unit");
+        nextUnit = String(existing.length + 1);
+      }
+
+      row.innerHTML = `
+        <input type="text" class="date-input input-add-unit" style="padding: 0.25rem; font-size: 0.725rem; text-align: center; height: 28px; border-radius: 4px; border: 1px solid var(--color-border); min-width: 0;" value="${escapeHtml(nextUnit)}" placeholder="1">
+        <input type="text" class="date-input input-add-length" style="padding: 0.25rem; font-size: 0.725rem; text-align: center; height: 28px; border-radius: 4px; border: 1px solid var(--color-border); min-width: 0;" value="${escapeHtml(length)}" placeholder="20">
+        <input type="text" class="date-input input-add-width" style="padding: 0.25rem; font-size: 0.725rem; text-align: center; height: 28px; border-radius: 4px; border: 1px solid var(--color-border); min-width: 0;" value="${escapeHtml(width)}" placeholder="25">
+        <input type="text" class="date-input input-add-thickness" style="padding: 0.25rem; font-size: 0.725rem; text-align: center; height: 28px; border-radius: 4px; border: 1px solid var(--color-border); min-width: 0;" value="${escapeHtml(thickness)}" placeholder="2">
+        <input type="number" class="date-input input-add-qty" style="padding: 0.25rem; font-size: 0.725rem; text-align: center; height: 28px; border-radius: 4px; border: 1px solid var(--color-border); min-width: 0;" value="${escapeHtml(qty || '4')}" placeholder="4" min="1">
+        <button type="button" class="btn" style="padding: 0; color: #ef4444; border-color: #fca5a5; background: #fef2f2; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; border-radius: 4px;" onclick="this.parentElement.remove()" title="Delete unit entry">✕</button>
+      `;
+      container.appendChild(row);
+    }
+
+    // Saves the newly entered filter size dimensions data
+    function saveEnteredSizes() {
+      if (!selectedStoreId) return;
+      const storeObj = restaurants[selectedStoreId];
+      if (!storeObj) return;
+
+      const safeKey = getFirebaseSafePathKey(storeObj.storeNumber);
+      const rows = document.querySelectorAll("#addSizesRows .add-size-row-item");
+      const filterSizesList = [];
+      const totalsBySize = {};
+      let hasError = false;
+
+      rows.forEach(row => {
+        const unitInput = row.querySelector(".input-add-unit");
+        const lenInput = row.querySelector(".input-add-length");
+        const widInput = row.querySelector(".input-add-width");
+        const thkInput = row.querySelector(".input-add-thickness");
+        const qtyInput = row.querySelector(".input-add-qty");
+
+        if (!unitInput || !lenInput || !widInput || !thkInput || !qtyInput) return;
+
+        const unitVal = unitInput.value.trim() || "1";
+        const lenVal = lenInput.value.trim().replace(/\s+/g, "").toUpperCase();
+        const widVal = widInput.value.trim().replace(/\s+/g, "").toUpperCase();
+        const thkVal = thkInput.value.trim().replace(/\s+/g, "").toUpperCase();
+        const qtyVal = qtyInput.value.trim();
+
+        if (lenVal && widVal && thkVal) {
+          const sizeVal = `${lenVal}X${widVal}X${thkVal}`;
+          const parsedQty = parseInt(qtyVal, 10) || 1;
+          if (parsedQty <= 0) {
+            alert("Please enter a valid quantity greater than 0.");
+            hasError = true;
+            return;
+          }
+          filterSizesList.push({
+            unit: unitVal,
+            size: sizeVal,
+            qty: String(parsedQty)
+          });
+          const normalizedSizeKey = sizeVal.toUpperCase();
+          totalsBySize[normalizedSizeKey] = (totalsBySize[normalizedSizeKey] || 0) + parsedQty;
+        } else if (lenVal || widVal || thkVal) {
+          alert("Please specify all dimensions (Length, Width, Thickness) for your unit.");
+          hasError = true;
+        }
+      });
+
+      if (hasError) return;
+
+      if (filterSizesList.length === 0) {
+        alert("Please add at least one unit with complete dimensions to save filter sizes.");
+        return;
+      }
+
+      const filterSizeSummary = Object.entries(totalsBySize)
+        .map(([size, qty]) => `(${qty}) ${size}`)
+        .join(", ");
+
+      db.ref(`filterChanges/${safeKey}`).update({
+        storeNumber: storeObj.storeNumber,
+        filterSize: filterSizeSummary,
+        filterSizesList: JSON.stringify(filterSizesList)
+      }, (err) => {
+        if (err) {
+          alert("Could not save filter sizes: " + err.message);
+        } else {
+          alert("Filter sizes saved successfully!");
+          
+          // Force update our local client-state in-memory
+          const trackingRecord = filterChanges[safeKey] || {};
+          trackingRecord.filterSize = filterSizeSummary;
+          trackingRecord.filterSizesList = JSON.stringify(filterSizesList);
+          
+          loadFilterSizeData(trackingRecord);
+          updateModalSizesControls(trackingRecord);
+        }
+      });
     }
 
     function setDatePickerToToday() {
