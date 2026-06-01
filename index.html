@@ -113,83 +113,42 @@
       color: #1d4ed8;
     }
 
-    /* 3-Column Independent Scrollable Layout Panels */
+    /* Clean natural-scrolling responsive grid container */
     .columns-container {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
       gap: 1rem;
       width: 100%;
-      min-height: 0;
     }
 
-    .col-department {
-      flex: 1;
-      min-width: 0;
-      background-color: #ffffff;
-      border: 1px solid var(--color-border);
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .col-header {
-      padding: 0.75rem 1rem;
-      background-color: #f8fafc;
-      border-bottom: 1px solid var(--color-border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 700;
-      color: var(--text-dark);
-      font-size: 0.875rem;
-    }
-
-    .col-header-icon {
-      font-size: 1.1rem;
-      margin-right: 0.35rem;
-    }
-
-    .col-count-badge {
-      background-color: var(--state-none-badge);
-      color: var(--text-dark);
-      font-size: 0.725rem;
-      font-family: var(--font-mono);
-      font-weight: 700;
+    .card-department-tag {
+      font-size: 0.675rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      background-color: #f1f5f9;
       padding: 0.125rem 0.375rem;
-      border-radius: 9999px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-top: 0.25rem;
+      width: fit-content;
     }
 
-    .col-scroll-area {
-      flex: 1;
-      overflow-y: auto;
-      padding: 0.75rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    /* Desktop full-bleed lock view */
+    /* Desktop layout customization */
     @media (min-width: 769px) {
       body {
-        overflow: hidden;
+        overflow-y: auto;
       }
       main {
-        flex: 1;
-        min-height: 0;
-        display: flex;
-        flex-direction: column;
         max-width: 1200px;
         width: 100%;
-        margin: 1rem auto 1.5rem auto !important;
+        margin: 1.5rem auto !important;
         padding: 0 1.5rem;
-      }
-      .columns-container {
-        flex: 1;
-        min-height: 0;
       }
     }
 
-    /* Standard Portrait Mobile Layout Adaptation */
+    /* Standard Mobile Layout Adaptation */
     @media (max-width: 768px) {
       body {
         overflow-y: auto;
@@ -197,21 +156,6 @@
       main {
         margin: 1rem auto;
         padding: 0 1rem;
-      }
-      .columns-container {
-        flex-direction: column;
-        gap: 1.25rem;
-      }
-      .col-department {
-        height: 400px;
-        min-height: 350px;
-      }
-    }
-
-    /* Portrait Trigger for Mobile Prompt Alert */
-    @media (max-width: 768px) and (orientation: portrait) {
-      .orientation-prompt {
-        display: flex;
       }
     }
 
@@ -856,24 +800,14 @@
   </header>
 
   <main>
-    <!-- Orientation Prompt for Mobile Portrait -->
-    <div id="orientationPrompt" class="orientation-prompt">
-      <span class="orientation-icon">🔄</span>
-      <div style="flex: 1; text-align: left;">
-        <div style="font-weight: 700; font-size: 0.85rem; color: #1e3a8a;">Landscape Orientation Recommended</div>
-        <div style="font-size: 0.725rem; color: #1e40af; margin-top: 2px;">Rotate your device sideways to view the Fast Food, C-Store, and Car Wash columns side-by-side.</div>
-      </div>
-      <button class="orientation-dismiss-btn" onclick="dismissOrientationPrompt()">&times;</button>
-    </div>
-
     <!-- BOARD VIEW (STANDARD Dashboard columns and filters) -->
     <div id="boardViewContainer">
       <!-- ==================================================================== -->
       <!-- SEARCH & FILTER CHIP PANEL                                           -->
       <!-- ==================================================================== -->
-      <div class="filter-actions-panel">
+      <div class="filter-actions-panel" style="display: flex; flex-direction: column; gap: 1rem; align-items: stretch; margin-bottom: 1.5rem; background-color: #ffffff; border: 1px solid var(--color-border); border-radius: 12px; padding: 1.25rem; box-shadow: var(--shadow-sm);">
         <!-- Search Input -->
-        <div class="search-wrapper">
+        <div class="search-wrapper" style="max-width: 100%; flex: 1;">
           <span class="search-icon">🔍</span>
           <input 
             type="text" 
@@ -885,12 +819,41 @@
           <button id="searchClearBtn" class="search-clear-btn" onclick="clearSearch()">✕</button>
         </div>
 
-        <!-- Actionable Filtering state chips -->
-        <div class="filter-chips">
-          <button class="chip active" id="chip-all" onclick="setFilter('all')">All Stores (<span id="count-all">0</span>)</button>
-          <button class="chip" id="chip-overdue" onclick="setFilter('overdue')" style="color: var(--state-overdue-text);">Overdue (<span id="count-overdue">0</span>)</button>
-          <button class="chip" id="chip-none" onclick="setFilter('none')" style="color: var(--state-none-text);">Pending (<span id="count-none">0</span>)</button>
-          <button class="chip" id="chip-good" onclick="setFilter('good')" style="color: var(--state-good-text);">Up to Date (<span id="count-good">0</span>)</button>
+        <!-- Actionable Filtering groups -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; width: 100%; border-top: 1px dashed var(--color-border); padding-top: 0.85rem;">
+          
+          <!-- Filter Row 1: Filter Status -->
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <span style="font-size: 0.725rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; width: 90px; flex-shrink: 0;">🔧 Status:</span>
+            <div class="filter-chips">
+              <button class="chip active" id="chip-all" onclick="setFilter('all')">All Stores (<span id="count-all">0</span>)</button>
+              <button class="chip" id="chip-overdue" onclick="setFilter('overdue')" style="color: var(--state-overdue-text);">Overdue (<span id="count-overdue">0</span>)</button>
+              <button class="chip" id="chip-none" onclick="setFilter('none')" style="color: var(--state-none-text);">Pending (<span id="count-none">0</span>)</button>
+              <button class="chip" id="chip-good" onclick="setFilter('good')" style="color: var(--state-good-text);">Up to Date (<span id="count-good">0</span>)</button>
+            </div>
+          </div>
+
+          <!-- Filter Row 2: Category -->
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <span style="font-size: 0.725rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; width: 90px; flex-shrink: 0;">🏪 Category:</span>
+            <div class="filter-chips">
+              <button class="chip active" id="chip-dept-all" onclick="setDepartmentFilter('all')">All Categories</button>
+              <button class="chip" id="chip-dept-fastfood" onclick="setDepartmentFilter('fastfood')">🍔 Fast Food</button>
+              <button class="chip" id="chip-dept-cstore" onclick="setDepartmentFilter('cstore')">🏪 C-Store</button>
+              <button class="chip" id="chip-dept-carwash" onclick="setDepartmentFilter('carwash')">🧼 Car Wash</button>
+            </div>
+          </div>
+
+          <!-- Filter Row 3: Texas Regions -->
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <span style="font-size: 0.725rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; width: 90px; flex-shrink: 0;">📍 Location:</span>
+            <div class="filter-chips">
+              <button class="chip active" id="chip-reg-all" onclick="setRegionFilter('all')">All Regions</button>
+              <button class="chip" id="chip-reg-east" onclick="setRegionFilter('east')">🏁 East TX</button>
+              <button class="chip" id="chip-reg-west" onclick="setRegionFilter('west')">🌵 West TX</button>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -1028,11 +991,26 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
           <input type="hidden" id="modalCoilsCleaned" value="">
         </div>
 
-        <!-- Configured Filter Sizes (Read-only for technicians to view) -->
+        <!-- Configured Filter Sizes (Interactive list editor) -->
         <div class="form-group" style="margin-top: 1rem;">
-          <label class="form-label" style="margin-bottom: 0.35rem; display: block;">Configured Filter Sizes</label>
-          <div id="modalFiltersReadOnlyView" style="border: 1px solid var(--color-border); border-radius: 8px; padding: 0.75rem; background-color: #f8fafc; max-height: 180px; overflow-y: auto;">
-            <!-- Hydrated dynamically in loadFilterSizeData -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <label class="form-label" style="margin-bottom: 0;">Interactive Filter Sizes</label>
+            <button type="button" class="btn" style="padding: 0.2rem 0.5rem; font-size: 0.725rem; background-color: #eff6ff; color: #1e40af; border-color: #bfdbfe; height: 26px; display: flex; align-items: center; gap: 4px;" onclick="addModalFilterRow()">
+              ➕ Add Row
+            </button>
+          </div>
+          <div style="border: 1px solid var(--color-border); border-radius: 8px; padding: 0.75rem; background-color: #f8fafc;">
+            <!-- Row Headings -->
+            <div style="display: grid; grid-template-columns: 1.5fr 3.5fr 1.5fr 35px; gap: 0.4rem; margin-bottom: 0.4rem; font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.025em; padding-left: 0.15rem;">
+              <div>Unit #</div>
+              <div>Filter Size</div>
+              <div>Qty</div>
+              <div></div>
+            </div>
+            <!-- Rows Container -->
+            <div id="modalFilterRowsContainer" style="display: flex; flex-direction: column; gap: 0.4rem; max-height: 180px; overflow-y: auto; padding-right: 2px;">
+              <!-- Hydrated dynamically with interactive unit inputs -->
+            </div>
           </div>
         </div>
 
@@ -1093,6 +1071,8 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
     // UI reactive settings
     let searchQuery = "";
     let activeFilter = "all"; // 'all', 'overdue', 'none', 'good'
+    let activeDepartment = "all"; // 'all', 'fastfood', 'cstore', 'carwash'
+    let activeRegion = "all"; // 'all', 'east', 'west'
     let selectedStoreId = null;
 
     // Helper to sanitize key paths for Firebase Compatibility 
@@ -1189,6 +1169,12 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
     // ==========================================
     // 5. RENDERING PIPELINE & HELPER UTILITIES
     // ==========================================
+    // Helper to abbreviate Burger King to BK for display
+    function formatStoreNameDisplay(name) {
+      if (!name) return "";
+      return name.replace(/Burger King/gi, "BK");
+    }
+
     // Classifies the store department by literal strings
     function getStoreColumn(name) {
       if (!name) return "cstore";
@@ -1222,6 +1208,13 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
       `;
     }
 
+    function getStoreDepartmentLabel(name) {
+      const colKey = getStoreColumn(name);
+      if (colKey === "fastfood") return "🍔 Fast Food";
+      if (colKey === "carwash") return "🧼 Car Wash";
+      return "🏪 C-Store";
+    }
+
     // Renders the highly detailed horizontal operational card
     function renderStoreCardHtml(store) {
       let statusString = "";
@@ -1252,16 +1245,14 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
 
           <!-- Center Panel: High-density info with short details -->
           <div style="display: flex; flex-direction: column; min-width: 0; flex: 1; margin: 0 0.15rem;">
-            <span class="card-store-title" title="${escapeHtml(store.storeName)}">${escapeHtml(store.storeName)}</span>
-            ${store.filterSize ? `
-              <span class="card-filter-size-label" style="display: inline-flex; align-items: center; gap: 0.25rem;">
-                <strong>📏 ${escapeHtml(store.filterSize)}</strong>
-              </span>
-            ` : `
-              <span class="card-filter-size-label text-placeholder" style="display: inline-flex; align-items: center; gap: 0.25rem;">
-                <span>📏</span> Set size
-              </span>
-            `}
+            <span class="card-store-title" title="${escapeHtml(store.storeName)}">${escapeHtml(formatStoreNameDisplay(store.storeName))}</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; align-items: center; margin-top: 0.15rem;">
+              ${!store.filterSize ? `
+                <span class="card-filter-size-label text-placeholder">
+                  📏 Sizes Missing
+                </span>
+              ` : ''}
+            </div>
           </div>
 
           <!-- Right Panel: Relative time metrics -->
@@ -1319,12 +1310,33 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
         });
       }
 
-      // Apply Category Filters
+      // Apply Status Filters
       if (activeFilter !== "all") {
         displayedStores = displayedStores.filter(store => {
           if (activeFilter === "overdue") return store.status === "state-overdue";
           if (activeFilter === "none") return store.status === "state-none";
           if (activeFilter === "good") return store.status === "state-good";
+          return true;
+        });
+      }
+
+      // Apply Category Filters (Fast Food, C-Store, Car Wash)
+      if (activeDepartment !== "all") {
+        displayedStores = displayedStores.filter(store => {
+          return getStoreColumn(store.storeName) === activeDepartment;
+        });
+      }
+
+      // Apply TX Region Filters (East TX vs West TX based on longitude < -96)
+      if (activeRegion !== "all") {
+        displayedStores = displayedStores.filter(store => {
+          const lng = parseFloat(store.longitude || store.lng || store.lon || store.long || 0);
+          if (isNaN(lng)) return false;
+          if (activeRegion === "east") {
+            return lng < -96;
+          } else if (activeRegion === "west") {
+            return lng >= -96;
+          }
           return true;
         });
       }
@@ -1362,53 +1374,8 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
         return;
       }
 
-      // Distribute stores into the 3 requested columns
-      const cols = {
-        fastfood: [],
-        cstore: [],
-        carwash: []
-      };
-
-      displayedStores.forEach(store => {
-        const key = getStoreColumn(store.storeName);
-        cols[key].push(store);
-      });
-
-      // Render the 3 department columns with independent inner scroll areas
-      storesGrid.innerHTML = `
-        <!-- Fast Food Column -->
-        <div class="col-department">
-          <div class="col-header">
-            <span style="display: flex; align-items: center;"><span class="col-header-icon">🍔</span> Fast Food</span>
-            <span class="col-count-badge" id="col-count-fastfood">${cols.fastfood.length}</span>
-          </div>
-          <div class="col-scroll-area">
-            ${cols.fastfood.length === 0 ? getColumnEmptyState("Fast Food") : cols.fastfood.map(store => renderStoreCardHtml(store)).join("")}
-          </div>
-        </div>
-
-        <!-- C-Store Column -->
-        <div class="col-department">
-          <div class="col-header">
-            <span style="display: flex; align-items: center;"><span class="col-header-icon">🏪</span> C-Store</span>
-            <span class="col-count-badge" id="col-count-cstore">${cols.cstore.length}</span>
-          </div>
-          <div class="col-scroll-area">
-            ${cols.cstore.length === 0 ? getColumnEmptyState("C-Store") : cols.cstore.map(store => renderStoreCardHtml(store)).join("")}
-          </div>
-        </div>
-
-        <!-- Car Wash Column -->
-        <div class="col-department">
-          <div class="col-header">
-            <span style="display: flex; align-items: center;"><span class="col-header-icon">🧼</span> Car Wash</span>
-            <span class="col-count-badge" id="col-count-carwash">${cols.carwash.length}</span>
-          </div>
-          <div class="col-scroll-area">
-            ${cols.carwash.length === 0 ? getColumnEmptyState("Car Wash") : cols.carwash.map(store => renderStoreCardHtml(store)).join("")}
-          </div>
-        </div>
-      `;
+      // Render the store cards directly as a single flat responsive grid list
+      storesGrid.innerHTML = displayedStores.map(store => renderStoreCardHtml(store)).join("");
     }
 
     // Calculate aggregated counter states
@@ -1443,7 +1410,7 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
       const lastChangeTimestamp = trackingRecord.lastFilterChangeTimestamp || null;
 
       // Title & static metadata
-      document.getElementById("modalStoreTitle").innerText = storeObj.storeName;
+      document.getElementById("modalStoreTitle").innerText = formatStoreNameDisplay(storeObj.storeName);
       document.getElementById("modalStoreNumber").innerText = storeObj.storeNumber || "N/A";
       document.getElementById("modalStoreAddress").innerText = storeObj.address || "No address populated";
       document.getElementById("modalStorePhone").innerText = storeObj.phone || "No phone listed";
@@ -1572,9 +1539,9 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
       }
     }
 
-    // Central load routine responsible for seeding modal with store tracking records
+    // Hydrates the interactive filter sizes editing grid in the modal
     function loadFilterSizeData(trackingRecord) {
-      const container = document.getElementById("modalFiltersReadOnlyView");
+      const container = document.getElementById("modalFilterRowsContainer");
       if (!container) return;
       container.innerHTML = "";
 
@@ -1620,54 +1587,49 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
         });
       }
 
-      // Filter out empty rows
-      rows = rows.filter(r => r.size && r.size.trim() !== "");
-
+      // If empty, prime with at least one empty row so it doesn't look blank
       if (rows.length === 0) {
-        container.innerHTML = `
-          <div style="text-align: center; color: var(--text-muted); font-size: 0.775rem; padding: 0.75rem 0;">
-            No filter sizes configured. Use the Bulk Filter Import tool to set sizes.
-          </div>
-        `;
-        return;
+        rows.push({ unit: "1", size: "", qty: "" });
       }
 
-      // Render read-only checklist of filter sizes
-      let html = `
-        <div style="display: grid; grid-template-columns: 2fr 3.5fr 2.5fr; gap: 0.5rem; border-bottom: 1px solid var(--color-border); padding-bottom: 0.25rem; margin-bottom: 0.4rem; font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
-          <div>Unit #</div>
-          <div>Filter Size</div>
-          <div style="text-align: right;">Quantity</div>
-        </div>
-      `;
-
       rows.forEach(r => {
-        html += `
-          <div style="display: grid; grid-template-columns: 2fr 3.5fr 2.5fr; gap: 0.5rem; align-items: center; padding: 0.35rem 0; font-size: 0.775rem; border-bottom: 1px dashed #f1f5f9;">
-            <div style="font-family: var(--font-mono); font-weight: 600; color: var(--text-muted);">Unit ${escapeHtml(r.unit)}</div>
-            <div style="font-weight: 700; color: #1e3a8a;">📐 ${escapeHtml(r.size)}</div>
-            <div style="text-align: right; font-family: var(--font-mono); font-weight: 700; color: var(--text-dark);">${escapeHtml(r.qty)} pcs</div>
-          </div>
-        `;
+        appendInteractiveRow(r.unit, r.size, r.qty);
       });
+    }
 
-      // Render summary badge of filter sizes at the bottom
-      const totalsBySize = {};
-      rows.forEach(r => {
-        if (!r.size) return;
-        const q = parseInt(r.qty, 10) || 0;
-        const s = r.size.toUpperCase();
-        totalsBySize[s] = (totalsBySize[s] || 0) + q;
-      });
-      const summaryParts = Object.entries(totalsBySize).map(([s, q]) => `<strong>(${q})</strong> ${s}`);
-      
-      html += `
-        <div style="margin-top: 0.65rem; padding-top: 0.5rem; border-top: 1px solid var(--color-border); font-size: 0.725rem; color: var(--text-dark); text-align: right; line-height: 1.45;">
-          Summary: ${summaryParts.join(" &nbsp;•&nbsp; ")}
-        </div>
+    // Dynamic Row Generation Helper
+    function appendInteractiveRow(unit = "", size = "", qty = "") {
+      const container = document.getElementById("modalFilterRowsContainer");
+      if (!container) return;
+
+      const rowDiv = document.createElement("div");
+      rowDiv.className = "modal-filter-row";
+      rowDiv.style.cssText = "display: grid; grid-template-columns: 1.5fr 3.5fr 1.5fr 35px; gap: 0.4rem; align-items: center;";
+
+      rowDiv.innerHTML = `
+        <input type="text" class="date-input modal-input-unit" style="padding: 0.3rem 0.4rem; font-size: 0.775rem; text-align: center; height: 32px; border-radius: 6px; border: 1px solid var(--color-border); background-color: #ffffff;" value="${escapeHtml(unit)}" placeholder="1">
+        <input type="text" class="date-input modal-input-size" style="padding: 0.3rem 0.4rem; font-size: 0.775rem; height: 32px; border-radius: 6px; border: 1px solid var(--color-border); background-color: #ffffff;" value="${escapeHtml(size)}" placeholder="e.g. 20x20x2">
+        <input type="number" class="date-input modal-input-qty" style="padding: 0.3rem 0.4rem; font-size: 0.775rem; text-align: center; height: 32px; border-radius: 6px; border: 1px solid var(--color-border); background-color: #ffffff;" value="${escapeHtml(qty)}" placeholder="4" min="1">
+        <button type="button" class="btn" style="padding: 0; color: #ef4444; border-color: #fca5a5; background: #fef2f2; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem;" onclick="this.parentElement.remove()" title="Delete row">✕</button>
       `;
+      container.appendChild(rowDiv);
+    }
 
-      container.innerHTML = html;
+    // Interactive Button Actions
+    function addModalFilterRow() {
+      const container = document.getElementById("modalFilterRowsContainer");
+      let nextUnitNum = 1;
+      if (container) {
+        const unitInputs = container.querySelectorAll(".modal-input-unit");
+        if (unitInputs.length > 0) {
+          const maxNum = Array.from(unitInputs)
+            .map(input => parseInt(input.value, 10))
+            .filter(val => !isNaN(val))
+            .reduce((max, val) => Math.max(max, val), 0);
+          nextUnitNum = maxNum + 1;
+        }
+      }
+      appendInteractiveRow(String(nextUnitNum), "", "");
     }
 
     // Imports parsed bulk copy-paste lines from Excel into interactive memory
@@ -1924,7 +1886,7 @@ Burger King #22027 Alvord	1	16x25x1	3</div>
           matchedCount++;
           statusBadgeHtml = `<span style="background-color: #dcfce7; color: #15803d; font-size: 0.675rem; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: 9999px; border: 1px solid #bbf7d0; display: inline-block;">✅ MATCHED</span>`;
           matchedNameHtml = `
-            <div style="font-weight: 700; color: var(--text-dark);">${escapeHtml(matchedStore.storeName)}</div>
+            <div style="font-weight: 700; color: var(--text-dark);">${escapeHtml(formatStoreNameDisplay(matchedStore.storeName))}</div>
             <div style="font-size: 0.725rem; color: var(--text-muted); font-family: var(--font-mono);">Store Number: #${escapeHtml(matchedStore.storeNumber)}</div>
           `;
         } else {
@@ -2092,7 +2054,7 @@ Burger King #27028 Gainesville\t1\t20x20x2\t4
       }
     }
 
-    // Write date entry straight to Firebase
+    // Write date entry and interactive filter sizes straight to Firebase
     function saveFilterChangeDate() {
       if (!selectedStoreId) return;
       const storeObj = restaurants[selectedStoreId];
@@ -2110,12 +2072,68 @@ Burger King #27028 Gainesville\t1\t20x20x2\t4
       const coilsCleanedValue = document.getElementById("modalCoilsCleaned").value;
       const commentsValue = document.getElementById("modalComments").value.trim();
 
-      // We use .update() to preserve and avoid resetting preconstructed filter sizes
+      // Collect interactive filter size rows
+      const rows = document.querySelectorAll(".modal-filter-row");
+      const filterSizesList = [];
+      const totalsBySize = {};
+      let hasError = false;
+
+      rows.forEach(row => {
+        const unitInput = row.querySelector(".modal-input-unit");
+        const sizeInput = row.querySelector(".modal-input-size");
+        const qtyInput = row.querySelector(".modal-input-qty");
+
+        if (!unitInput || !sizeInput || !qtyInput) return;
+
+        const unitVal = unitInput.value.trim();
+        let sizeVal = sizeInput.value.trim();
+        const qtyVal = qtyInput.value.trim();
+
+        if (sizeVal) {
+          // Standardize size format: replace spaces in dimensions like "20 x 20 x 2" with "20x20x2"
+          // Keep trailing text comments if any (e.g. "(wide filter)")
+          const dimsRegex = /^(\d+\s*[xX]\s*\d+(?:\s*[xX]\s*\d+)?)(.*)$/;
+          const dimsMatch = sizeVal.match(dimsRegex);
+          if (dimsMatch) {
+            const dimensionPart = dimsMatch[1].replace(/\s+/g, "").toLowerCase();
+            const extraPart = dimsMatch[2] ? dimsMatch[2].trim() : "";
+            sizeVal = dimensionPart + (extraPart ? " " + extraPart : "");
+          }
+
+          const parsedQty = parseInt(qtyVal, 10) || 0;
+          if (parsedQty <= 0) {
+            alert(`Please enter a valid quantity greater than 0 for filter size: ${sizeVal}`);
+            hasError = true;
+            return;
+          }
+
+          filterSizesList.push({
+            unit: unitVal || "1",
+            size: sizeVal,
+            qty: String(parsedQty)
+          });
+
+          const normalizedSizeKey = sizeVal.toUpperCase();
+          totalsBySize[normalizedSizeKey] = (totalsBySize[normalizedSizeKey] || 0) + parsedQty;
+        }
+      });
+
+      if (hasError) return;
+
+      // Construct a beautiful summary overview string like: "(4) 20x20x2, (2) 16x16x2"
+      const filterSizeSummary = Object.entries(totalsBySize)
+        .map(([size, qty]) => `(${qty}) ${size}`)
+        .join(", ");
+
+      // Update Firebase cleanly!
       db.ref(`filterChanges/${safeKey}`).update({
         storeNumber: storeObj.storeNumber,
         lastFilterChangeTimestamp: timestamp,
         coilsCleaned: coilsCleanedValue,
-        comments: commentsValue
+        comments: commentsValue,
+        // Save the manual sizes!
+        filterSize: filterSizeSummary,
+        filterSizesList: JSON.stringify(filterSizesList)
       }, (err) => {
         if (err) {
           alert("Could not persist record: " + err.message);
@@ -2173,6 +2191,44 @@ Burger King #27028 Gainesville\t1\t20x20x2\t4
         const el = document.getElementById(`chip-${c}`);
         if (el) {
           if (c === filterType) {
+            el.classList.add("active");
+          } else {
+            el.classList.remove("active");
+          }
+        }
+      });
+
+      combineAndRender();
+    }
+
+    function setDepartmentFilter(deptType) {
+      activeDepartment = deptType;
+      
+      // Update chip CSS classes
+      const depts = ["all", "fastfood", "cstore", "carwash"];
+      depts.forEach(d => {
+        const el = document.getElementById(`chip-dept-${d}`);
+        if (el) {
+          if (d === deptType) {
+            el.classList.add("active");
+          } else {
+            el.classList.remove("active");
+          }
+        }
+      });
+
+      combineAndRender();
+    }
+
+    function setRegionFilter(regionType) {
+      activeRegion = regionType;
+      
+      // Update chip CSS classes
+      const regions = ["all", "east", "west"];
+      regions.forEach(r => {
+        const el = document.getElementById(`chip-reg-${r}`);
+        if (el) {
+          if (r === regionType) {
             el.classList.add("active");
           } else {
             el.classList.remove("active");
