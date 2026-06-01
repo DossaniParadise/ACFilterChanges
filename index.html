@@ -259,30 +259,31 @@
       border-color: var(--text-dark);
     }
 
-    /* Grid of Restaurants */
+    /* Grid of Restaurants - Multi-column density */
     .restaurants-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 0.5rem;
     }
 
-    /* Card Layout styling (Highly compact, beautifully tinted) */
+    /* Card Layout styling (Extremely high-density horizontal row widget, optimized for mobile) */
     .store-card {
       background-color: var(--state-none-bg);
       border: 1px solid var(--state-none-border);
-      border-radius: 10px;
-      padding: 1rem;
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
       cursor: pointer;
       display: flex;
-      flex-direction: column;
+      align-items: center;
       justify-content: space-between;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      gap: 0.625rem;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.1s ease;
       box-shadow: var(--shadow-sm);
-      min-height: 110px;
+      min-height: unset;
     }
 
     .store-card:hover {
-      transform: translateY(-2px);
+      transform: translateX(2px);
       box-shadow: var(--shadow-md);
       border-color: #cbd5e1;
     }
@@ -291,7 +292,6 @@
     .store-card.state-overdue {
       background-color: var(--state-overdue-bg);
       border-color: var(--state-overdue-border);
-      color: var(--state-overdue-text);
     }
     .store-card.state-overdue .card-store-badge {
       background-color: var(--state-overdue-badge);
@@ -302,35 +302,25 @@
     .store-card.state-good {
       background-color: var(--state-good-bg);
       border-color: var(--state-good-border);
-      color: var(--state-good-text);
     }
     .store-card.state-good .card-store-badge {
       background-color: var(--state-good-badge);
       color: var(--state-good-text);
     }
 
-    /* Card Interior Layout */
-    .card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 0.75rem;
-      gap: 0.5rem;
-    }
-
     .card-store-title {
-      font-size: 0.925rem;
-      font-weight: 700;
+      font-size: 0.875rem;
+      font-weight: 600;
       line-height: 1.25;
+      color: var(--text-dark);
       overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .card-store-badge {
       font-family: var(--font-mono);
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       font-weight: 700;
       padding: 0.125rem 0.375rem;
       border-radius: 4px;
@@ -339,28 +329,53 @@
       white-space: nowrap;
     }
 
-    .card-bottom {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .status-text-row {
-      display: flex;
-      align-items: center;
-      gap: 0.375rem;
-      font-size: 0.8rem;
+    .card-filter-size-label {
+      font-size: 0.725rem;
       font-weight: 600;
+      color: #1e40af;
+      background-color: #eff6ff;
+      padding: 0.05rem 0.3rem;
+      border-radius: 4px;
+      margin-top: 0.125rem;
+      display: inline-flex;
+      width: fit-content;
     }
 
-    .status-icon {
-      font-size: 0.85rem;
-    }
-
-    .days-text-desc {
-      font-size: 0.75rem;
+    .card-filter-size-label.text-placeholder {
+      color: #64748b;
+      background-color: #f1f5f9;
       font-weight: 500;
-      opacity: 0.85;
+    }
+
+    .card-status-pill {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      letter-spacing: 0.025em;
+    }
+
+    .card-status-pill.state-overdue {
+      background-color: var(--state-overdue-badge);
+      color: var(--state-overdue-text);
+    }
+
+    .card-status-pill.state-good {
+      background-color: var(--state-good-badge);
+      color: var(--state-good-text);
+    }
+
+    .card-status-pill.state-none {
+      background-color: var(--state-none-badge);
+      color: var(--state-none-text);
+    }
+
+    .card-days-text {
+      font-size: 0.725rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-top: 0.1rem;
     }
 
     /* Empty State fallback styling */
@@ -728,6 +743,31 @@
             <button class="btn btn-today" onclick="setDatePickerToToday()">Today</button>
           </div>
         </div>
+
+        <!-- Coils Cleaned Question -->
+        <div class="form-group" style="margin-top: 1rem;">
+          <label class="form-label">Were the coils cleaned?</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="button" id="btnCoilsYes" class="btn" style="flex: 1;" onclick="setCoilsCleaned('yes')">Yes</button>
+            <button type="button" id="btnCoilsNo" class="btn" style="flex: 1;" onclick="setCoilsCleaned('no')">No</button>
+          </div>
+          <input type="hidden" id="modalCoilsCleaned" value="">
+        </div>
+
+        <!-- Filter Size Field -->
+        <div class="form-group" style="margin-top: 1rem;">
+          <label class="form-label">Filter Size(s)</label>
+          <input type="text" id="modalFilterSize" class="date-input" style="width: 100%;" placeholder="e.g. (2) 20x20x2, (4) 20x25x2">
+        </div>
+
+        <!-- Comments Field -->
+        <div class="form-group" style="margin-top: 1rem;">
+          <div class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+            <span>Additional Comments</span>
+            <span id="charCount" style="font-size: 0.725rem; font-weight: normal; color: var(--text-muted);">0 / 250</span>
+          </div>
+          <textarea id="modalComments" class="date-input" style="width: 100%; height: 75px; resize: none; font-family: var(--font-sans); line-height: 1.4; padding: 0.5rem;" maxlength="250" oninput="updateCommentCharLimit(this.value)" placeholder="Enter any extra details or technician notes..."></textarea>
+        </div>
       </div>
       
       <div class="modal-footer">
@@ -899,21 +939,23 @@
           ...store,
           lastFilterChangeTimestamp: timestamp,
           daysElapsed: daysElapsed,
-          status: getStoreStatusClass(daysElapsed)
+          status: getStoreStatusClass(daysElapsed),
+          filterSize: trackingRecord.filterSize || ""
         };
       });
 
       // Update counters regardless of search & filters
       updateStatsMetrics(enrichedStores);
 
-      // Apply Search Filter (Case-insensitive matching store number or name)
+      // Apply Search Filter (Case-insensitive matching store number, name, or filter size)
       let displayedStores = enrichedStores;
       const query = searchQuery.trim().toLowerCase();
       if (query) {
         displayedStores = enrichedStores.filter(store => {
           const storeName = (store.storeName || "").toLowerCase();
           const storeNumber = (store.storeNumber || "").toLowerCase();
-          return storeName.includes(query) || storeNumber.includes(query);
+          const filterSize = (store.filterSize || "").toLowerCase();
+          return storeName.includes(query) || storeNumber.includes(query) || filterSize.includes(query);
         });
       }
 
@@ -928,11 +970,7 @@
       }
 
       // Sort Order Strategy: Most overdue stores first
-      // 1. Stores over threshold sorted by longest days over limit
-      // 2. Stores with no filter change records
-      // 3. Recently completed stores sorted by oldest change (closest to threshold)
       displayedStores.sort((a, b) => {
-        // Classify priorities: Group 1 = OVERDUE (highest priority), Group 2 = NONE, Group 3 = GOOD
         const aPriority = a.status === "state-overdue" ? 1 : (a.status === "state-none" ? 2 : 3);
         const bPriority = b.status === "state-overdue" ? 1 : (b.status === "state-none" ? 2 : 3);
         
@@ -940,18 +978,14 @@
           return aPriority - bPriority;
         }
 
-        // Sub-sorting rules within uniform status groupings:
         if (a.status === "state-overdue") {
-          // Most overdue first (highest days elapsed descending)
           return b.daysElapsed - a.daysElapsed;
         }
         
         if (a.status === "state-good") {
-          // Oldest change first (highest days elapsed descending) to flag closest to becoming overdue next
           return b.daysElapsed - a.daysElapsed;
         }
 
-        // Under Pending/No records: Sort alphabetically by store number
         const numA = (a.storeNumber || "").toLowerCase();
         const numB = (b.storeNumber || "").toLowerCase();
         return numA.localeCompare(numB, undefined, { numeric: true });
@@ -975,31 +1009,45 @@
         let iconHtml = "⚪";
 
         if (store.status === "state-overdue") {
-          statusString = "FILTER OVERDUE";
-          daysString = `${store.daysElapsed} days since last change`;
+          statusString = "OVERDUE";
+          daysString = `${store.daysElapsed}d overdue`;
           iconHtml = "⚠️";
         } else if (store.status === "state-good") {
-          statusString = "FILTER COMPLETED";
-          daysString = `${store.daysElapsed} days ago`;
+          statusString = "GOOD";
+          daysString = `${store.daysElapsed}d ago`;
           iconHtml = "✅";
         } else {
-          statusString = "No Filter Change Recorded";
-          daysString = "Action Required";
+          statusString = "PENDING";
+          daysString = "Never";
           iconHtml = "➖";
         }
 
         gridHtml += `
           <div class="store-card ${store.status}" onclick="openStoreDetails('${store.id}')">
-            <div class="card-top">
-              <span class="card-store-title">${escapeHtml(store.storeName)}</span>
+            <!-- Left Panel: Icon status indicator & Store Number -->
+            <div style="display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0;">
+              <span style="font-size: 1rem; line-height: 1;">${iconHtml}</span>
               <span class="card-store-badge">${escapeHtml(store.storeNumber || '#')}</span>
             </div>
-            <div class="card-bottom">
-              <div class="status-text-row">
-                <span class="status-icon">${iconHtml}</span>
-                <span>${statusString}</span>
-              </div>
-              <div class="days-text-desc">${daysString}</div>
+
+            <!-- Center Panel: High-density info with short details -->
+            <div style="display: flex; flex-direction: column; min-width: 0; flex: 1; margin: 0 0.15rem;">
+              <span class="card-store-title" title="${escapeHtml(store.storeName)}">${escapeHtml(store.storeName)}</span>
+              ${store.filterSize ? `
+                <span class="card-filter-size-label" style="display: inline-flex; align-items: center; gap: 0.25rem;">
+                  <strong>📏 ${escapeHtml(store.filterSize)}</strong>
+                </span>
+              ` : `
+                <span class="card-filter-size-label text-placeholder" style="display: inline-flex; align-items: center; gap: 0.25rem;">
+                  <span>📏</span> Set size
+                </span>
+              `}
+            </div>
+
+            <!-- Right Panel: Relative time metrics -->
+            <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; min-width: 72px;">
+              <span class="card-status-pill ${store.status}">${statusString}</span>
+              <span class="card-days-text">${daysString}</span>
             </div>
           </div>
         `;
@@ -1053,6 +1101,23 @@
         picker.value = "";
       }
 
+      // Set the coils question state
+      const coilsVal = trackingRecord.coilsCleaned || "";
+      setCoilsCleaned(coilsVal);
+
+      // Set filter sizes value
+      const filterSizeInput = document.getElementById("modalFilterSize");
+      if (filterSizeInput) {
+        filterSizeInput.value = trackingRecord.filterSize || "";
+      }
+
+      // Set comments input state
+      const commentsTextarea = document.getElementById("modalComments");
+      if (commentsTextarea) {
+        commentsTextarea.value = trackingRecord.comments || "";
+        updateCommentCharLimit(commentsTextarea.value);
+      }
+
       document.getElementById("detailsModal").classList.add("active");
     }
 
@@ -1065,6 +1130,58 @@
       // Populates the date picker with today's formatted USA Central Date
       const todayDateStr = getChicagoTodayDateString();
       document.getElementById("modalDatePicker").value = todayDateStr;
+    }
+
+    // Coils Yes / No button handler helper
+    function setCoilsCleaned(val) {
+      const input = document.getElementById("modalCoilsCleaned");
+      const btnYes = document.getElementById("btnCoilsYes");
+      const btnNo = document.getElementById("btnCoilsNo");
+      
+      if (!input || !btnYes || !btnNo) return;
+      
+      input.value = val;
+      
+      if (val === "yes") {
+        btnYes.className = "btn btn-primary";
+        btnYes.style.backgroundColor = "#16a34a"; // Green active
+        btnYes.style.borderColor = "#16a34a";
+        btnYes.style.color = "#ffffff";
+
+        btnNo.className = "btn";
+        btnNo.style.backgroundColor = "";
+        btnNo.style.borderColor = "";
+        btnNo.style.color = "";
+      } else if (val === "no") {
+        btnNo.className = "btn btn-primary";
+        btnNo.style.backgroundColor = "#dc2626"; // Red active
+        btnNo.style.borderColor = "#dc2626";
+        btnNo.style.color = "#ffffff";
+
+        btnYes.className = "btn";
+        btnYes.style.backgroundColor = "";
+        btnYes.style.borderColor = "";
+        btnYes.style.color = "";
+      } else {
+        // Reset both
+        btnYes.className = "btn";
+        btnYes.style.backgroundColor = "";
+        btnYes.style.borderColor = "";
+        btnYes.style.color = "";
+
+        btnNo.className = "btn";
+        btnNo.style.backgroundColor = "";
+        btnNo.style.borderColor = "";
+        btnNo.style.color = "";
+      }
+    }
+
+    // Comments character limit helper
+    function updateCommentCharLimit(value) {
+      const charCountEl = document.getElementById("charCount");
+      if (charCountEl) {
+        charCountEl.innerText = `${value.length} / 250`;
+      }
     }
 
     // Write date entry straight to Firebase
@@ -1082,11 +1199,17 @@
       }
 
       const timestamp = convertDateStringToChicagoTimestamp(pickerValue);
+      const coilsCleanedValue = document.getElementById("modalCoilsCleaned").value;
+      const filterSizeValue = document.getElementById("modalFilterSize").value.trim();
+      const commentsValue = document.getElementById("modalComments").value.trim();
 
       // Writes straight into /filterChanges/<storeNumber>
       db.ref(`filterChanges/${safeKey}`).set({
         storeNumber: storeObj.storeNumber,
-        lastFilterChangeTimestamp: timestamp
+        lastFilterChangeTimestamp: timestamp,
+        coilsCleaned: coilsCleanedValue,
+        filterSize: filterSizeValue,
+        comments: commentsValue
       }, (err) => {
         if (err) {
           alert("Could not persist record: " + err.message);
